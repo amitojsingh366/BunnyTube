@@ -1,0 +1,10 @@
+{
+  "name": "bunnytube",
+  "version": "1.0.0",
+  "description": "Watch together site where you can upload your own videos",
+  "main": "index.js",
+  "repository": "https://github.com/amitojsingh366/BunnyTube",
+  "author": "Amitoj Singh",
+  "license": "MIT",
+  "private": true
+}
