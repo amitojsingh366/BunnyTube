@@ -1,0 +1,20 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:13-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bunnytube
+      POSTGRES_PASSWORD: backend
+      POSTGRES_DB: bunnytube
+    volumes:
+      - ./.docker/postgres:/var/lib/docker/volumes/postgresql/_data
+  bunnytube-backend:
+    build: ./
+    environment:
+      DATABASE_URL: postgres://bunnytube:backend@postgres/bunnytube
+    ports:
+      - 8443:8443
+      - 7418:7418
+    depends_on:
+      - postgres

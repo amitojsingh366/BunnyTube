@@ -1,0 +1,23 @@
+{
+    "op": {
+        "type": "string"
+    },
+    "data": {
+        "type": "object",
+        "properties": {
+            "username": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string",
+                "isOptional": true
+            },
+            "password": {
+                "type": "string"
+            }
+        }
+    }
+}

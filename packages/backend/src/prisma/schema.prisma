@@ -1,0 +1,73 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+enum UserRole {
+    ADMINISTRATOR
+    USER
+}
+
+enum RoomUserRole {
+    ADMINISTRATOR
+    MODERATOR
+    USER
+}
+
+enum RoomPrivacy {
+    PUBLIC
+    PRIVATE
+}
+
+model User {
+    id        String     @id @default(uuid())
+    index     Int        @default(autoincrement())
+    name      String
+    username  String     @unique
+    email     String?    @unique
+    password  String
+    created   DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    role      UserRole   @default(USER)
+    Token     Token?
+    RoomUsers RoomUser[]
+}
+
+model Token {
+    id        Int       @id @default(autoincrement())
+    user      User      @relation(fields: [userId], references: [id])
+    userId    String
+    jid       String    @unique
+    revoked   Boolean   @default(false)
+    revokedAt DateTime?
+    issuedAt  DateTime  @default(now())
+}
+
+model BannedUsers {
+    index  Int    @id @default(autoincrement())
+    id     String @unique
+    reason String
+}
+
+model Room {
+    id        String      @id @default(uuid())
+    index     Int         @default(autoincrement())
+    name      String
+    privacy   RoomPrivacy @default(PRIVATE)
+    users     RoomUser[]
+    created   DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+}
+
+model RoomUser {
+    index  Int          @default(autoincrement())
+    userId String       @unique
+    user   User         @relation(references: [id], fields: [userId])
+    Room   Room         @relation(fields: [roomId], references: [id])
+    roomId String
+    role   RoomUserRole @default(USER)
+}
