@@ -1,10 +1,26 @@
 {
   "name": "bunnytube",
-  "version": "1.0.0",
   "description": "Watch together site where you can upload your own videos",
   "main": "index.js",
   "repository": "https://github.com/amitojsingh366/BunnyTube",
   "author": "Amitoj Singh",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "cz-conventional-changelog": "^3.3.0",
+    "typescript": "^4.2.4"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "scripts": {
+    "commit": "cz -S",
+    "commit:unsigned": "cz"
+  }
 }
