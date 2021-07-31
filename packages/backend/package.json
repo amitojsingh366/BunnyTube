@@ -1,0 +1,13 @@
+{
+  "name": "@bunytube/website",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0"
+  }
+}
