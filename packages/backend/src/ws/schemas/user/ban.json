@@ -8,11 +8,7 @@
             "username": {
                 "type": "string"
             },
-            "token": {
-                "type": "string",
-                "isOptional": true
-            },
-            "password": {
+            "reason": {
                 "type": "string",
                 "isOptional": true
             }

@@ -6,16 +6,20 @@ import { WebsocketServerEvents } from './events';
 import { MessagePayload } from './types';
 import OperatorExecutor from './classes/OperatorExecutor';
 import { glob } from 'glob';
+import { PrismaClient } from '@prisma/client';
+
 
 export class WebsocketServer extends Eventra<WebsocketServerEvents> {
-    public clients: Collection<string, WebSocket> = new Collection();
+    public clients: Collection<string, { id: string, ws: WebSocket }> = new Collection();
     public operators: Collection<string, OperatorExecutor> = new Collection();
     public server: WebSocket.Server;
+    public database: PrismaClient;
 
     constructor(port: number) {
         super();
         this.server = new WebSocket.Server({ port });
 
+        this.database = new PrismaClient();
         this.registerOperators();
         this.start();
     }
@@ -34,16 +38,17 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
     }
 
     addClient(id: string, ws: WebSocket) {
-        this.clients.set(id, ws);
+        this.clients.set(id, { id, ws });
 
         this.emit('opened', ws);
 
         ws.on('close', () => {
             this.emit('closed', ws);
+            this.removeClient(id);
         })
 
         ws.on('error', (error) => {
-            this.emit('error', ws, error)
+            this.emit('error', ws, error);
         })
 
         ws.on('message', (data) => {
@@ -51,7 +56,7 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
             if (!this.operators.has(payload.op)) return ws.send(JSON.stringify({ code: 1007, error: 'Invalid OP' }))
 
             const operator = this.operators.get(payload.op)
-            operator?.execute(ws, payload);
+            operator?.execute(this, { id, ws }, payload);
         })
     }
 
@@ -66,7 +71,8 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
         const client = this.clients.get(id);
         if (!client) return;
 
-        client.close();
+        if (!client.ws.CLOSED) client.ws.close();
+        this.database.authedUsers.delete({ where: { wsId: id } });
         this.clients.delete(id);
     }
 
@@ -86,7 +92,8 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
         }
 
         this.server.removeAllListeners();
-        this.server.close()
+        this.server.close();
+        this.database.$disconnect();
     }
 
 

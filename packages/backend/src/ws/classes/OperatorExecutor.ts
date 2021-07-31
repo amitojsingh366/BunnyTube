@@ -1,11 +1,12 @@
 import { MessagePayload } from "../types";
 import WebSocket from 'ws';
+import { WebsocketServer } from "..";
 
-export type MiddlewareMethod = (client: WebSocket, payload: MessagePayload, next: () => void) => void;
-export type Executor = (client: WebSocket, payload: MessagePayload) => void;
+export type MiddlewareMethod = (server: WebsocketServer, client: { id: string, ws: WebSocket }, payload: MessagePayload, next: () => void) => void;
+export type Executor = (server: WebsocketServer, client: { id: string, ws: WebSocket }, payload: MessagePayload) => void;
 
-const defaultExecutor: Executor = (client: WebSocket, payload: MessagePayload) => {
-    return client.send(JSON.stringify({ code: 1007, error: 'Invalid OP' }))
+const defaultExecutor: Executor = (server: WebsocketServer, client: { id: string, ws: WebSocket }, payload: MessagePayload) => {
+    return client.ws.send(JSON.stringify({ code: 1007, error: 'Invalid OP' }))
 }
 
 export default class OperatorExecutor {
@@ -31,12 +32,12 @@ export default class OperatorExecutor {
         return this;
     }
 
-    public async execute(client: WebSocket, payload: MessagePayload): Promise<OperatorExecutor> {
+    public async execute(server: WebsocketServer, client: { id: string, ws: WebSocket }, payload: MessagePayload): Promise<OperatorExecutor> {
         let proms: Promise<void>[] = []
-        this._middlewareMethods.map(fn => proms.push(new Promise((res, _rej) => fn(client, payload, res))));
+        this._middlewareMethods.map(fn => proms.push(new Promise((res, _rej) => fn(server, { ws: client.ws, id: client.id }, payload, res))));
         if (proms.length > 0) await Promise.all(proms);
 
-        this._executor(client, payload);
+        this._executor(server, { ws: client.ws, id: client.id }, payload);
         return this;
     }
 }
