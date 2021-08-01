@@ -15,7 +15,7 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
     public clients: Collection<string, { id: string, ws: WebSocket }> = new Collection();
     public operators: Collection<string, OperatorExecutor> = new Collection();
     public server: WebSocket.Server;
-    public users: AuthManager = new AuthManager();
+    public users: AuthManager = new AuthManager(this);
     public rooms: RoomManager = new RoomManager(this);
 
     constructor(port: number) {
@@ -79,11 +79,11 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
     }
 
     start() {
+        this.cleanRooms();
         this.server.on('connection', (ws) => {
             const id = uuidv4();
             this.addClient(id, ws);
         })
-
         process.on('exit', () => {
             this.stop();
         })
@@ -91,15 +91,21 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
 
     stop() {
         for (const key in this.clients.keys()) {
-            if (Object.prototype.hasOwnProperty.call(this.clients.keys(), key)) {
-                const id = this.clients.keys()[key];
-                this.removeClient(id);
-            }
+            const id = this.clients.keys()[key];
+            this.removeClient(id);
         }
 
         this.server.removeAllListeners();
         this.server.close();
-        database.$disconnect();
+        this.cleanRooms();
+    }
+
+    cleanRooms() {
+        database.roomUser.deleteMany().then(() => {
+            database.room.deleteMany().then(() => {
+                database.$disconnect();
+            })
+        })
     }
 
 

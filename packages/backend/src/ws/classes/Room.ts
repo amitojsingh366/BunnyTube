@@ -31,54 +31,62 @@ export class Room extends Eventra<RoomEvents>{
                 roomId: this._id,
                 userId: roomUser.id
             }
-        }).then(async (ru) => {
-            this.emit('joined', roomUser);
+        }).then(async () => {
+            this.emit('joined', roomUser.data());
 
             const data = JSON.stringify({
                 op: 'room:user_joined',
-                data: { user }
+                data: { user: roomUser.data() }
             })
 
             this._users.forEach((u) => u.ws.send(data))
         })
-
-        return roomUser;
+        return this;
     }
 
-    async leave(user: RoomUser) {
+    async leave(userId: string) {
+        const user = this.getUser(userId);
+        if (!user) return;
+
         this._users.delete(user.id)
 
         await database.roomUser.delete({ where: { userId: user.id } }).then(async (ru) => {
-            this.emit('left', user);
+            this.emit('left', user.data());
 
             const data = JSON.stringify({
                 op: 'room:user_left',
-                data: { user }
+                data: { user: user.data() }
             })
 
             this._users.forEach((u) => u.ws.send(data))
         })
 
-        return user;
+        return this;
     }
 
-    async kick(mod: RoomUser, user: RoomUser, reason: string) {
+    async kick(modId: string, userId: string, reason: string) {
+        const user = this.getUser(userId);
+        const mod = this.getUser(modId);
+        if (!user || !mod) return;
+
         if (mod.role == RoomUserRole.USER) return;
-        this._users.delete(user.id);
 
         await database.roomUser.delete({ where: { userId: user.id } }).then(async (ru) => {
-            this.emit('kicked', user);
+            this.emit('kicked', user.data());
 
             const data = JSON.stringify({
                 op: 'room:user_kicked',
-                data: { user, reason }
+                data: { user: user.data(), reason }
             })
 
             user.ws.send(data);
             this._users.forEach((u) => u.ws.send(data))
         })
+
+        this._users.delete(user.id);
         return user;
     }
+
 
     async destroy(modId: string) {
         const user = this.getUser(modId);
@@ -86,9 +94,27 @@ export class Room extends Eventra<RoomEvents>{
 
         if (user.id !== this.creator.id) return;
         this._users.forEach(async (u) => {
-            await this.kick(user, u, 'Room Closed');
+            await this.kick(user.id, u.id, 'Room Closed');
         });
-        await database.room.delete({ where: { id: this.id } })
+
+        await database.roomUser.deleteMany({ where: { roomId: this._id } }).then(async () => {
+            await database.room.delete({ where: { id: this.id } })
+        })
+    }
+
+    async sendMessage(authorId: string, content: string) {
+        const author = this.getUser(authorId);
+        if (!author) return;
+
+        this._users.forEach((u) => {
+            if (u.id !== author.id) u.ws.send(JSON.stringify({
+                op: 'chat:message',
+                data: {
+                    author: author.data(),
+                    content
+                }
+            }))
+        })
     }
 
     get id(): string { return this._id }

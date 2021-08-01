@@ -36,3 +36,10 @@ export interface UserToken {
     issuedAt: Date;
 }
 
+export interface RoomUserData {
+    id: string,
+    roomId: string,
+    role: string,
+    wsId: string
+}
+

@@ -34,6 +34,8 @@ export class RoomManager {
         const room = new Room(r.id, user);
         this._rooms.set(r.id, room);
 
+        this.setListeners(room);
+
         return room;
     }
 
@@ -43,6 +45,29 @@ export class RoomManager {
 
         await room.destroy(modId);
         this._rooms.delete(id);
+    }
+
+    setListeners(room: Room) {
+        room.on('joined', (user) => {
+            const authedUser = this._server.users.getUserByWsId(user.wsId);
+            if (!authedUser) return;
+
+            authedUser.setRoom(room);
+        });
+
+        room.on('left', (user) => {
+            const authedUser = this._server.users.getUserByWsId(user.wsId);
+            if (!authedUser) return;
+
+            authedUser.setRoom(undefined);
+        });
+
+        room.on('kicked', (user) => {
+            const authedUser = this._server.users.getUserByWsId(user.wsId);
+            if (!authedUser) return;
+
+            authedUser.setRoom(undefined);
+        });
     }
 }
 

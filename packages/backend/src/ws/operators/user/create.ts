@@ -32,7 +32,7 @@ operator.setExecutor(async (server, client, payload) => {
                 username: payload.data.username,
                 name: payload.data.name,
                 password: Password.hash(payload.data.password),
-                email: payload.data.email ?? ""
+                email: payload.data.email ?? null
             }
         }).then(async (user) => {
 

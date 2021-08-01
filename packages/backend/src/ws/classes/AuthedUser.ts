@@ -2,6 +2,7 @@ import { UserRole } from "@prisma/client";
 import { UserFile, UserToken } from "../types";
 import { database } from "../../prisma";
 import WebSocket from "ws";
+import { Room } from "./Room";
 
 export class AuthedUser {
     private _id: string;
@@ -15,6 +16,7 @@ export class AuthedUser {
     private _role: UserRole;
     private _token?: UserToken | null;
     private _files?: UserFile[] | null;
+    private _room?: Room;
 
     constructor(id: string, wsClient: { id: string; ws: WebSocket }) {
         this._id = id;
@@ -56,6 +58,11 @@ export class AuthedUser {
     get updatedAt(): Date | null | undefined { return this._updatedAt }
     get token(): UserToken | null | undefined { return this._token }
     get files(): UserFile[] | null | undefined { return this._files }
+    get room(): Room | undefined { return this._room }
+
+    setRoom(room: Room | undefined) {
+        this._room = room;
+    }
 }
 
 

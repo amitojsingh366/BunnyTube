@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { RoomUser } from './classes/RoomUser';
+import { RoomUserData } from './types';
 
 export interface WebsocketServerEvents {
     'opened': (client: WebSocket) => void,
@@ -8,7 +8,7 @@ export interface WebsocketServerEvents {
 }
 
 export interface RoomEvents {
-    'joined': (user: RoomUser) => void,
-    'left': (user: RoomUser) => void,
-    'kicked': (user: RoomUser) => void,
+    'joined': (user: RoomUserData) => void,
+    'left': (user: RoomUserData) => void,
+    'kicked': (user: RoomUserData) => void,
 }

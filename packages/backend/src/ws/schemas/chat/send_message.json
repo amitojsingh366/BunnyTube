@@ -1,0 +1,13 @@
+{
+    "op": {
+        "type": "string"
+    },
+    "data": {
+        "type": "object",
+        "properties": {
+            "content": {
+                "type": "string"
+            }
+        }
+    }
+}
