@@ -24,19 +24,18 @@ enum Privacy {
 }
 
 model User {
-    id          String        @id @default(uuid())
-    index       Int           @default(autoincrement())
-    name        String
-    username    String        @unique
-    email       String?       @unique
-    password    String
-    created     DateTime      @default(now())
-    updatedAt   DateTime      @updatedAt
-    role        UserRole      @default(USER)
-    token       Token?
-    roomUsers   RoomUser[]
-    files       File[]
-    authedUsers AuthedUsers[]
+    id        String     @id @default(uuid())
+    index     Int        @default(autoincrement())
+    name      String
+    username  String     @unique
+    email     String?    @unique
+    password  String
+    created   DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    role      UserRole   @default(USER)
+    token     Token?
+    roomUsers RoomUser[]
+    files     File[]
 }
 
 model Token {
@@ -83,11 +82,4 @@ model File {
     user    User?   @relation(fields: [userId], references: [id])
     userId  String?
     privacy Privacy @default(PUBLIC)
-}
-
-model AuthedUsers {
-    index  Int    @default(autoincrement())
-    userId String @unique
-    wsId   String @unique
-    user   User   @relation(references: [id], fields: [userId])
 }

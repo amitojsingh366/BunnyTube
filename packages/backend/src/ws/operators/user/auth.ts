@@ -4,6 +4,7 @@ import authSchema from '../../schemas/user/auth.json';
 import jwt from "jsonwebtoken";
 import Password from "../../classes/Password";
 import { v4 as uuidv4 } from 'uuid';
+import { database } from "../../../prisma";
 
 const operator = new OperatorExecutor({
     name: 'user:auth'
@@ -19,7 +20,7 @@ operator.setExecutor(async (server, client, payload) => {
         error: 'Unauthorized'
     }));
 
-    await server.database.user.findUnique(
+    await database.user.findUnique(
         {
             where: { username: payload.data.username },
             select: { id: true, token: true, password: true }
@@ -69,14 +70,14 @@ operator.setExecutor(async (server, client, payload) => {
                 exp: Date.now() + 1296000000
             }, JWT_SECRET);
 
-            await server.database.token.delete({ where: { jti: user.token?.jti } }).catch((e) => {
+            await database.token.delete({ where: { jti: user.token?.jti } }).catch((e) => {
                 return client.ws.send(JSON.stringify({
                     code: 4006,
                     error: e
                 }))
             });
 
-            await server.database.token.create({
+            await database.token.create({
                 data: {
                     jti,
                     userId: user.id
@@ -88,19 +89,7 @@ operator.setExecutor(async (server, client, payload) => {
                 }))
             })
 
-            await server.database.authedUsers.deleteMany({ where: { userId: user.id } })
-
-            await server.database.authedUsers.create({
-                data: {
-                    wsId: client.id,
-                    userId: user.id
-                }
-            }).catch((e) => {
-                return client.ws.send(JSON.stringify({
-                    code: 4006,
-                    error: e
-                }))
-            })
+            server.users.auth(user.id, client);
 
             return client.ws.send(JSON.stringify({
                 op: `${operator.name}:reply`,

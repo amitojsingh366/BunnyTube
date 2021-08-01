@@ -6,20 +6,22 @@ import { WebsocketServerEvents } from './events';
 import { MessagePayload } from './types';
 import OperatorExecutor from './classes/OperatorExecutor';
 import { glob } from 'glob';
-import { PrismaClient } from '@prisma/client';
+import { database } from '../prisma';
+import { AuthManager } from './managers/AuthManager';
+import { RoomManager } from './managers/RoomManager';
 
 
 export class WebsocketServer extends Eventra<WebsocketServerEvents> {
     public clients: Collection<string, { id: string, ws: WebSocket }> = new Collection();
     public operators: Collection<string, OperatorExecutor> = new Collection();
     public server: WebSocket.Server;
-    public database: PrismaClient;
+    public users: AuthManager = new AuthManager();
+    public rooms: RoomManager = new RoomManager(this);
 
     constructor(port: number) {
         super();
         this.server = new WebSocket.Server({ port });
 
-        this.database = new PrismaClient();
         this.registerOperators();
         this.start();
     }
@@ -72,7 +74,7 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
         if (!client) return;
 
         if (!client.ws.CLOSED) client.ws.close();
-        this.database.authedUsers.delete({ where: { wsId: id } });
+        this.users.deauth(id);
         this.clients.delete(id);
     }
 
@@ -97,7 +99,7 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
 
         this.server.removeAllListeners();
         this.server.close();
-        this.database.$disconnect();
+        database.$disconnect();
     }
 
 

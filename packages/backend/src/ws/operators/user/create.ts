@@ -4,6 +4,7 @@ import createSchema from '../../schemas/user/create.json';
 import Password from "../../classes/Password";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
+import { database } from "../../../prisma";
 
 const operator = new OperatorExecutor({
     name: 'user:create'
@@ -13,7 +14,7 @@ operator.use(Schema(createSchema))
 
 operator.setExecutor(async (server, client, payload) => {
     const JWT_SECRET = process.env.JWT_SECRET || "";
-    await server.database.user.findUnique({ where: { username: payload.data.username } }).then(async (user) => {
+    await database.user.findUnique({ where: { username: payload.data.username } }).then(async (user) => {
         if (user !== null) return client.ws.send(JSON.stringify({
             code: 4000,
             error: 'User Already Exists'
@@ -26,7 +27,7 @@ operator.setExecutor(async (server, client, payload) => {
             exp: Date.now() + 1296000000
         }, JWT_SECRET);
 
-        await server.database.user.create({
+        await database.user.create({
             data: {
                 username: payload.data.username,
                 name: payload.data.name,
@@ -35,7 +36,7 @@ operator.setExecutor(async (server, client, payload) => {
             }
         }).then(async (user) => {
 
-            await server.database.token.create({
+            await database.token.create({
                 data: {
                     jti,
                     userId: user.id
