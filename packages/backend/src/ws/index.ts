@@ -81,6 +81,10 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
             const id = uuidv4();
             this.addClient(id, ws);
         })
+
+        process.on('exit', () => {
+            this.stop();
+        })
     }
 
     stop() {

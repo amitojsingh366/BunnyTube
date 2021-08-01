@@ -3,6 +3,7 @@ import { Schema } from "../../operatorMiddleware/schema";
 import authSchema from '../../schemas/user/auth.json';
 import jwt from "jsonwebtoken";
 import Password from "../../classes/Password";
+import { v4 as uuidv4 } from 'uuid';
 
 const operator = new OperatorExecutor({
     name: 'user:auth'
@@ -28,38 +29,33 @@ operator.setExecutor(async (server, client, payload) => {
                 error: 'User Not Found'
             }));
 
-
             if (user.token && payload.data.token) {
                 try {
-                    const a = jwt.verify(user.token.token, JWT_SECRET)
-                    const b = jwt.verify(payload.data.token, JWT_SECRET)
+                    const verifiedToken = jwt.verify(payload.data.token, JWT_SECRET)
                     if (user.token.revoked) return client.ws.send(JSON.stringify({
                         code: 4006,
                         error: 'Token Expired'
                     }))
-                    if (typeof a !== "string" && typeof b !== "string") {
-                        if (a.jti !== b.jti) return client.ws.send(JSON.stringify({
-                            code: 4001,
-                            error: 'Unauthorized'
-                        }))
-                        if ((b.exp || 0) < Date.now()) return client.ws.send(JSON.stringify({
-                            code: 4006,
-                            error: 'Token Expired'
-                        }))
-                    } else {
-                        if (a !== b) return client.ws.send(JSON.stringify({
-                            code: 4001,
-                            error: 'Unauthorized'
-                        }))
-                    }
+                    if (typeof verifiedToken === "string") return client.ws.send(JSON.stringify({
+                        code: 4001,
+                        error: 'Unauthorized'
+                    }))
+                    if (verifiedToken.jti !== user.token.jti) return client.ws.send(JSON.stringify({
+                        code: 4001,
+                        error: 'Unauthorized'
+                    }))
+                    if ((verifiedToken.exp || 0) < Date.now()) return client.ws.send(JSON.stringify({
+                        code: 4006,
+                        error: 'Token Expired'
+                    }))
                 } catch (error) {
                     return client.ws.send(JSON.stringify({
                         code: 4000,
                         error
                     }));
                 }
-
             }
+
             if (payload.data.password) {
                 if (!Password.validate(payload.data.password, user.password)) return client.ws.send(JSON.stringify({
                     code: 4001,
@@ -67,19 +63,23 @@ operator.setExecutor(async (server, client, payload) => {
                 }))
             }
 
+            const jti = uuidv4();
             const newToken = jwt.sign({
-                id: payload.data.username, data: {
-                    hash: Password.hash(payload.data.username)
-                }
-            }, JWT_SECRET, { expiresIn: '15 days' });
+                jti,
+                exp: Date.now() + 1296000000
+            }, JWT_SECRET);
 
-            await server.database.user.update({
-                where: { username: payload.data.username }, data: {
-                    token: {
-                        create: {
-                            token: newToken
-                        }
-                    }
+            await server.database.token.delete({ where: { jti: user.token?.jti } }).catch((e) => {
+                return client.ws.send(JSON.stringify({
+                    code: 4006,
+                    error: e
+                }))
+            });
+
+            await server.database.token.create({
+                data: {
+                    jti,
+                    userId: user.id
                 }
             }).catch((e) => {
                 return client.ws.send(JSON.stringify({
@@ -87,6 +87,8 @@ operator.setExecutor(async (server, client, payload) => {
                     error: e
                 }))
             })
+
+            await server.database.authedUsers.deleteMany({ where: { userId: user.id } })
 
             await server.database.authedUsers.create({
                 data: {
@@ -108,7 +110,7 @@ operator.setExecutor(async (server, client, payload) => {
                 }
             }))
         })
-})
 
+})
 export default operator;
 

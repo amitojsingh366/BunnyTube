@@ -43,7 +43,7 @@ model Token {
     id        Int       @id @default(autoincrement())
     user      User      @relation(fields: [userId], references: [id])
     userId    String
-    token     String    @unique
+    jti       String    @unique
     revoked   Boolean   @default(false)
     revokedAt DateTime?
     issuedAt  DateTime  @default(now())

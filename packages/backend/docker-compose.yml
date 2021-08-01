@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: bunnytube
       POSTGRES_PASSWORD: backend
       POSTGRES_DB: bunnytube
+    ports:
+      - "5432:5432"
     volumes:
       - ./.docker/postgres:/var/lib/docker/volumes/postgresql/_data
   bunnytube-backend:
