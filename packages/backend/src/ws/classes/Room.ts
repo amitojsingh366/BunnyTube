@@ -50,7 +50,7 @@ export class Room extends Eventra<RoomEvents>{
 
         this._users.delete(user.id)
 
-        await database.roomUser.delete({ where: { userId: user.id } }).then(async (ru) => {
+        await database.roomUser.delete({ where: { userId: user.id } }).then(async () => {
             this.emit('left', user.data());
 
             const data = JSON.stringify({
@@ -68,10 +68,11 @@ export class Room extends Eventra<RoomEvents>{
         const user = this.getUser(userId);
         const mod = this.getUser(modId);
         if (!user || !mod) return;
-
         if (mod.role == RoomUserRole.USER) return;
 
-        await database.roomUser.delete({ where: { userId: user.id } }).then(async (ru) => {
+        this._users.delete(user.id);
+
+        return await database.roomUser.delete({ where: { userId: user.id } }).then(async () => {
             this.emit('kicked', user.data());
 
             const data = JSON.stringify({
@@ -81,10 +82,9 @@ export class Room extends Eventra<RoomEvents>{
 
             user.ws.send(data);
             this._users.forEach((u) => u.ws.send(data))
-        })
 
-        this._users.delete(user.id);
-        return user;
+            return user;
+        })
     }
 
 
@@ -93,9 +93,12 @@ export class Room extends Eventra<RoomEvents>{
         if (!user) return;
 
         if (user.id !== this.creator.id) return;
-        this._users.forEach(async (u) => {
-            await this.kick(user.id, u.id, 'Room Closed');
-        });
+
+        for (const id in this._users) {
+            const u = this._users.get(id);
+            if (!u) continue;
+            await this.kick(user.id, u.id, 'Room Closed')
+        }
 
         await database.roomUser.deleteMany({ where: { roomId: this._id } }).then(async () => {
             await database.room.delete({ where: { id: this.id } })

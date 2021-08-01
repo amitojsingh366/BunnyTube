@@ -5,6 +5,7 @@ import WebSocket from "ws";
 
 export class RoomUser {
     private _id: string;
+    private _username: string;
     private _room: Room;
     private _role: RoomUserRole;
     private _ws: WebSocket;
@@ -12,6 +13,7 @@ export class RoomUser {
 
     constructor(user: AuthedUser, room: Room) {
         this._id = user.id;
+        this._username = user.username;
         this._ws = user.wsClient.ws;
         this._wsId = user.wsClient.id;
         this._room = room;
@@ -21,6 +23,7 @@ export class RoomUser {
     }
 
     get id(): string { return this._id }
+    get username(): string { return this._username }
     get room(): Room { return this._room }
     get role(): RoomUserRole { return this._role }
     get ws(): WebSocket { return this._ws }
@@ -29,6 +32,7 @@ export class RoomUser {
     data() {
         return {
             id: this._id,
+            username: this._username,
             roomId: this._room.id,
             role: this._role,
             wsId: this._wsId
