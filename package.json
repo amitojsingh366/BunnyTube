@@ -3,7 +3,7 @@
   "description": "Watch together site where you can upload your own videos",
   "main": "index.js",
   "repository": "https://github.com/amitojsingh366/BunnyTube",
-  "author": "Amitoj Singh",
+  "author": "Amitoj Singh <amitoj@amitoj.net> (https://amitoj.net)",
   "license": "MIT",
   "private": true,
   "workspaces": [

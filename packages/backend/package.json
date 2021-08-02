@@ -1,5 +1,5 @@
 {
-  "name": "@bunytube/website",
+  "name": "@bunnytube/backend",
   "version": "0.1.0",
   "private": true,
   "scripts": {

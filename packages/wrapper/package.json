@@ -1,14 +1,18 @@
 {
   "name": "@bunnytube/wrapper",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "postinstall": "yarn build"
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {
     "isomorphic-ws": "^4.0.1",
-    "reconnecting-websocket": "^4.4.0"
+    "reconnecting-websocket": "^4.4.0",
+    "ws": "^8.0.0"
   },
   "devDependencies": {
     "@types/ws": "^7.4.7"
