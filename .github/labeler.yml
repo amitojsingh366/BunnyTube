@@ -2,3 +2,5 @@ backend:
   - packages/backend/**/*
 website:
   - packages/website/**/*
+wrapper:
+  - packages/wrapper/**/*

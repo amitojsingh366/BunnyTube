@@ -15,6 +15,7 @@
     "blakets": "^0.0.0-4",
     "dotenv": "^10.0.0",
     "glob": "^7.1.7",
+    "isomorphic-ws": "^4.0.1",
     "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.2",
     "ws": "^8.0.0"

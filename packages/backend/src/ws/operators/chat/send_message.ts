@@ -1,5 +1,6 @@
 import OperatorExecutor from "../../classes/OperatorExecutor";
 import { CheckAuth } from "../../operatorMiddleware/checkauth";
+import { Ping } from "../../operatorMiddleware/ping";
 import { Schema } from "../../operatorMiddleware/schema";
 import sendMessageSchema from '../../schemas/chat/send_message.json';
 
@@ -7,6 +8,7 @@ const operator = new OperatorExecutor({
     name: 'chat:send_message'
 })
 
+operator.use(Ping());
 operator.use(Schema(sendMessageSchema))
 operator.use(CheckAuth())
 

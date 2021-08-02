@@ -5,11 +5,13 @@ import Password from "../../classes/Password";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import { database } from "../../../prisma";
+import { Ping } from "../../operatorMiddleware/ping";
 
 const operator = new OperatorExecutor({
     name: 'user:create'
 })
 
+operator.use(Ping());
 operator.use(Schema(createSchema))
 
 operator.setExecutor(async (server, client, payload) => {

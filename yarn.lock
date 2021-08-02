@@ -76,6 +76,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bunnytube/wrapper@workspace:packages/wrapper":
+  version: 0.0.0-use.local
+  resolution: "@bunnytube/wrapper@workspace:packages/wrapper"
+  dependencies:
+    "@types/ws": ^7.4.7
+    isomorphic-ws: ^4.0.1
+    reconnecting-websocket: ^4.4.0
+  languageName: unknown
+  linkType: soft
+
 "@bunytube/website@workspace:packages/backend":
   version: 0.0.0-use.local
   resolution: "@bunytube/website@workspace:packages/backend"
@@ -91,6 +101,7 @@ __metadata:
     cz-conventional-changelog: 3.3.0
     dotenv: ^10.0.0
     glob: ^7.1.7
+    isomorphic-ws: ^4.0.1
     jsonwebtoken: ^8.5.1
     prisma: ^2.28.0
     typescript: ^4.3.4
@@ -2513,6 +2524,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"isomorphic-ws@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "isomorphic-ws@npm:4.0.1"
+  peerDependencies:
+    ws: "*"
+  checksum: 9012eec8ea4070a5e1cde4d937cc51e0d3136e53029b4d9c53d551b777ec3f99e9b8d31884c50dcefe0c6d50dd3562d9470c2249c6ff72ebb00b27092adec537
+  languageName: node
+  linkType: hard
+
 "jest-worker@npm:27.0.0-next.5":
   version: 27.0.0-next.5
   resolution: "jest-worker@npm:27.0.0-next.5"
@@ -3810,6 +3830,13 @@ __metadata:
   dependencies:
     picomatch: ^2.2.1
   checksum: 7da2fe8d5abf17ae0bf97a052718e16d29fa185f3e461153035728d93642326ae8e44c17b9a9b3a5fa616dff160e96be3184e0323efaac7211f80c0aab5f622b
+  languageName: node
+  linkType: hard
+
+"reconnecting-websocket@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "reconnecting-websocket@npm:4.4.0"
+  checksum: f87b201847456c7e2cdffd5f283ca1ec4c08cb696ca46580c4443e16132d0e383ae29ce3bed5a590a4904df20345ef0093caa4e08c7b343cd6e9848428f3c67a
   languageName: node
   linkType: hard
 

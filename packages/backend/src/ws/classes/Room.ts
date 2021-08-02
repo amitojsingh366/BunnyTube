@@ -97,7 +97,7 @@ export class Room extends Eventra<RoomEvents>{
         for (const id in this._users) {
             const u = this._users.get(id);
             if (!u) continue;
-            await this.kick(user.id, u.id, 'Room Closed')
+            await this.kick(user.id, u.id, 'Room Closed').then(() => { })
         }
 
         await database.roomUser.deleteMany({ where: { roomId: this._id } }).then(async () => {

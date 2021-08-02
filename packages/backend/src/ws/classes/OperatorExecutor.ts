@@ -1,5 +1,5 @@
 import { MessagePayload } from "../types";
-import WebSocket from 'ws';
+import WebSocket from "isomorphic-ws";
 import { WebsocketServer } from "..";
 
 export type MiddlewareMethod = (server: WebsocketServer, client: { id: string, ws: WebSocket }, payload: MessagePayload, next: () => void) => void;

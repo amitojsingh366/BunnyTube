@@ -1,6 +1,6 @@
 import Collection from "@discordjs/collection";
 import { Room } from "../classes/Room";
-import WebSocket from 'ws';
+import WebSocket from "isomorphic-ws";
 import { database } from "../../prisma";
 import { WebsocketServer } from "..";
 import { Privacy } from "../types";

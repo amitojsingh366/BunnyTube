@@ -1,4 +1,4 @@
-import WebSocket from 'ws';
+import WebSocket from "isomorphic-ws";
 import Collection from '@discordjs/collection';
 import { v4 as uuidv4 } from 'uuid';
 import { Eventra } from '@duxcore/eventra';
@@ -12,11 +12,12 @@ import { RoomManager } from './managers/RoomManager';
 
 
 export class WebsocketServer extends Eventra<WebsocketServerEvents> {
-    public clients: Collection<string, { id: string, ws: WebSocket }> = new Collection();
+    public clients: Collection<string, { id: string, ws: WebSocket, timeout: { interval?: NodeJS.Timer, lastPing: number } }> = new Collection();
     public operators: Collection<string, OperatorExecutor> = new Collection();
     public server: WebSocket.Server;
     public users: AuthManager = new AuthManager(this);
     public rooms: RoomManager = new RoomManager(this);
+    public WS_TIMEOUT: number = Number(process.env.WS_TIMEOUT || 10000);
 
     constructor(port: number) {
         super();
@@ -40,7 +41,8 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
     }
 
     addClient(id: string, ws: WebSocket) {
-        this.clients.set(id, { id, ws });
+        this.clients.set(id, { id, ws, timeout: { lastPing: Date.now() } });
+        this.addClientTimeout(id, this.WS_TIMEOUT)
 
         this.emit('opened', ws);
 
@@ -54,11 +56,15 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
         })
 
         ws.on('message', (data) => {
-            const payload: MessagePayload = JSON.parse(data as string);
-            if (!this.operators.has(payload.op)) return ws.send(JSON.stringify({ code: 1007, error: 'Invalid OP' }))
+            try {
+                const payload: MessagePayload = JSON.parse(data as string);
+                if (!this.operators.has(payload.op)) return ws.send(JSON.stringify({ code: 1007, error: 'Invalid OP' }))
 
-            const operator = this.operators.get(payload.op)
-            operator?.execute(this, { id, ws }, payload);
+                const operator = this.operators.get(payload.op)
+                operator?.execute(this, { id, ws }, payload);
+            } catch (e) {
+                console.log('Error')
+            }
         })
     }
 
@@ -75,6 +81,7 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
 
         if (!client.ws.CLOSED) client.ws.close();
         this.users.deauth(id);
+        if (client.timeout.interval) clearInterval(client.timeout.interval);
         this.clients.delete(id);
     }
 
@@ -108,9 +115,19 @@ export class WebsocketServer extends Eventra<WebsocketServerEvents> {
         })
     }
 
+    addClientTimeout(id: string, timeout: number) {
+        const client = this.getClient(id);
+        if (!client) return;
 
+        const interval = setInterval(() => {
+            if (Date.now() - client.timeout.lastPing > timeout) client.ws.close();
+        }, timeout)
+
+        client.timeout.interval = interval;
+        this.clients.set(id, client);
+    }
+
+    setClientTimeout(timeout: number) {
+        this.WS_TIMEOUT = timeout;
+    }
 }
-
-
-
-

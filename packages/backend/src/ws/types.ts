@@ -38,6 +38,7 @@ export interface UserToken {
 
 export interface RoomUserData {
     id: string,
+    username: string,
     roomId: string,
     role: string,
     wsId: string

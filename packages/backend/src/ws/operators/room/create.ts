@@ -1,5 +1,6 @@
 import OperatorExecutor from "../../classes/OperatorExecutor";
 import { CheckAuth } from "../../operatorMiddleware/checkauth";
+import { Ping } from "../../operatorMiddleware/ping";
 import { Schema } from "../../operatorMiddleware/schema";
 import createSchema from '../../schemas/room/create.json';
 import { Privacy } from "../../types";
@@ -8,6 +9,7 @@ const operator = new OperatorExecutor({
     name: 'room:create'
 })
 
+operator.use(Ping());
 operator.use(Schema(createSchema))
 operator.use(CheckAuth())
 
