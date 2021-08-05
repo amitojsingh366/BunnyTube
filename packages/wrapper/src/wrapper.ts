@@ -1,5 +1,5 @@
 import { Connection } from "./connection";
-import { ChatMessageData, RoomCreateAndJoinResponse, RoomUserJoinAndLeaveData, RoomUserKickedData, Token, UserAuthAndCreateResponse, UserBanResponse } from "./types";
+import { ChatMessageData, ErrorResponse, RoomCreateAndJoinResponse, RoomUserJoinAndLeaveData, RoomUserKickedData, Token, UserAuthAndCreateResponse, UserBanResponse } from "./types";
 
 type Handler<Data> = (data: Data) => void;
 
@@ -9,9 +9,9 @@ export const wrap = (connection: Connection) => ({
     connection,
     query: {
         user: {
-            auth: (username: string, password?: string, token?: string): Promise<Token> => new Promise((resolve, reject) => {
+            auth: (username: string, password?: string, token?: string): Promise<UserAuthAndCreateResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('user:auth', { username, password, token }).then((f) => {
-                    resolve((f as UserAuthAndCreateResponse).token)
+                    resolve((f as UserAuthAndCreateResponse))
                 })
             })
         },
@@ -22,26 +22,26 @@ export const wrap = (connection: Connection) => ({
 
     mutation: {
         user: {
-            create: (username: string, name: string, password: string, email?: string): Promise<Token> => new Promise((resolve, reject) => {
+            create: (username: string, name: string, password: string, email?: string): Promise<UserAuthAndCreateResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('user:create', { username, name, password, email }).then((f) => {
-                    resolve((f as UserAuthAndCreateResponse).token)
+                    resolve((f as UserAuthAndCreateResponse))
                 })
             }),
-            ban: (username: string, reason?: string): Promise<string> => new Promise((resolve, reject) => {
+            ban: (username: string, reason?: string): Promise<UserBanResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('user:ban', { username, reason }).then((f) => {
-                    resolve((f as UserBanResponse).id)
+                    resolve((f as UserBanResponse))
                 })
             })
         },
         room: {
-            create: (name: string, isPrivate?: string): Promise<string> => new Promise((resolve, reject) => {
+            create: (name: string, isPrivate?: string): Promise<RoomCreateAndJoinResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('room:create', { name, private: isPrivate }).then((f) => {
-                    resolve((f as RoomCreateAndJoinResponse).id)
+                    resolve((f as RoomCreateAndJoinResponse))
                 })
             }),
-            join: (id: string): Promise<string> => new Promise((resolve, reject) => {
+            join: (id: string): Promise<RoomCreateAndJoinResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('room:join', { id }).then((f) => {
-                    resolve((f as RoomCreateAndJoinResponse).id)
+                    resolve((f as RoomCreateAndJoinResponse))
                 })
             }),
             leave: () => new Promise((resolve, reject) => {
@@ -66,6 +66,10 @@ export const wrap = (connection: Connection) => ({
                 connection.addListener("room:user_left", handler),
             userKicked: (handler: Handler<RoomUserKickedData>) =>
                 connection.addListener("room:user_kicked", handler),
+        },
+        user: {
+            userAuth: (handler: Handler<UserAuthAndCreateResponse>) =>
+                connection.addListener("user:auth:reply", handler),
         }
     }
 

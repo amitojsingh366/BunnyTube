@@ -1,5 +1,6 @@
 import WebSocket from "isomorphic-ws";
 import ReconnectingWebSocket from "reconnecting-websocket";
+import { v4 as uuidv4 } from "uuid";
 
 const apiUrl = "ws://localhost:8443";
 
@@ -22,7 +23,7 @@ export type Connection = {
         op: string,
         handler: ListenerHandler<Data>
     ) => () => void;
-    send: (op: string, data: unknown) => void;
+    send: (op: string, data: unknown, ref: string) => void;
     fetch: (
         op: string,
         data: unknown,
@@ -31,7 +32,17 @@ export type Connection = {
 
 };
 
-export const connect = (url?: string): Promise<Connection> => new Promise((resolve, reject) => {
+export const connect = (
+    {
+        url = apiUrl,
+        auth = undefined,
+        onAuth = (data: unknown) => { },
+    }: {
+        url?: string;
+        auth?: { username: string, token: string };
+        onAuth?: (data: unknown) => void;
+    }
+): Promise<Connection> => new Promise((resolve, reject) => {
     const socket = new ReconnectingWebSocket(url ?? apiUrl, [], {
         connectionTimeout,
         WebSocket,
@@ -54,14 +65,15 @@ export const connect = (url?: string): Promise<Connection> => new Promise((resol
 
     });
 
-    const apiSend = (op: string, data: unknown) => {
+    const apiSend = (op: string, data: unknown, ref: string) => {
 
         if (socket.readyState !== socket.OPEN) {
             return;
         }
         const wsdata = JSON.stringify({
             op,
-            data
+            data,
+            ref
         })
 
         socket.send(wsdata);
@@ -81,10 +93,12 @@ export const connect = (url?: string): Promise<Connection> => new Promise((resol
         send: apiSend,
         fetch: (op: string, data: unknown) =>
             new Promise((resolveFetch, rejectFetch) => {
+                const ref = uuidv4();
                 connection.addListener(`${op}:reply`, (data) => {
+                    if ((data as any).ref !== ref) return;
                     resolveFetch(data);
                 });
-                apiSend(op, data);
+                apiSend(op, data, ref);
             }),
     };
 
@@ -105,6 +119,11 @@ export const connect = (url?: string): Promise<Connection> => new Promise((resol
                 socket.send(JSON.stringify({ op: 'ping' }));
             }
         }, heartbeatInterval);
+        if (auth) {
+            connection.fetch('user:auth', auth, 'user:auth:reply').then((resp) => {
+                onAuth(resp);
+            })
+        }
     })
 
     resolve(connection);

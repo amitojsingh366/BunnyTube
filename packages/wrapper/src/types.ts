@@ -8,17 +8,17 @@ export interface RoomUser {
 }
 
 export interface UserAuthAndCreateResponse {
-    success: boolean,
+    success: true,
     token: Token
 }
 
 export interface UserBanResponse {
-    success: boolean,
+    success: true,
     id: string
 }
 
 export interface RoomCreateAndJoinResponse {
-    success: boolean,
+    success: true,
     id: string
 }
 
@@ -36,4 +36,9 @@ export interface RoomUserKickedData {
     reason: string
 }
 
+export interface ErrorResponse {
+    success: false,
+    error: string,
+    code: number
+}
 
