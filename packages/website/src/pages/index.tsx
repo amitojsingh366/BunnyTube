@@ -3,14 +3,16 @@ import { Button } from "../components/Button";
 import { useWrappedConn } from "../hooks/useConn";
 import { useAuthStore } from "../modules/auth/useAuthStore";
 import { Input } from "../components/Input";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const wrapper = useWrappedConn();
+  const { replace } = useRouter();
+
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoding] = useState(false);
-
 
   const login = async () => {
     if (!username && !password) return;
@@ -19,11 +21,11 @@ export default function Home() {
     setLoding(false);
     if (!resp.success) console.error(resp.error)
     if (resp.success) {
-      useAuthStore.getState().setAuth({ token: resp.token, username })
+      useAuthStore.getState().setAuth({ token: resp.token, username });
+      replace("/dash");
     }
   }
 
-  useEffect(() => { console.log(loading) }, [loading])
 
   return (
     <div className="w-full h-full">

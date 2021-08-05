@@ -22,7 +22,11 @@ export const WebSocketProvider: React.FC = ({ children }) => {
     const hasAuth = useAuthStore((s) => s.token && s.username);
 
     const onAuth = (resp: any) => {
-        if (resp.success) useAuthStore.getState().setToken({ token: resp.token })
+        if (resp.success) {
+            useAuthStore.getState().setToken({ token: resp.token });
+            replace("/dash");
+        }
+        if (!resp.success) replace("/");
     }
 
     useEffect(() => {

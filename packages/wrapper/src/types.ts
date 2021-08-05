@@ -7,6 +7,18 @@ export interface RoomUser {
     role: string,
 }
 
+export interface UserGetResponse {
+    success: true,
+    user: {
+        id: string;
+        username: string;
+        role: string;
+        name: string;
+        email?: string;
+        wsId: string;
+    }
+}
+
 export interface UserAuthAndCreateResponse {
     success: true,
     token: Token

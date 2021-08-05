@@ -63,6 +63,17 @@ export class AuthedUser {
     setRoom(room: Room | undefined) {
         this._room = room;
     }
+
+    data() {
+        return {
+            id: this._id,
+            username: this._username,
+            role: this._role,
+            name: this._name,
+            email: this._email,
+            wsId: this._wsClient.id
+        }
+    }
 }
 
 

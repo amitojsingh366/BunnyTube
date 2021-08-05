@@ -18,6 +18,7 @@ export type Listener<Data = unknown> = {
 
 export type Connection = {
     socket: ReconnectingWebSocket,
+    authed: boolean,
     close: () => void;
     addListener: <Data = unknown>(
         op: string,
@@ -77,8 +78,8 @@ export const connect = (
 
     const connection: Connection = {
         socket,
+        authed: false,
         close: () => socket.close(),
-
         addListener: (op, handler) => {
             const listener = { op, handler } as Listener<unknown>;
 
@@ -119,6 +120,7 @@ export const connect = (
         }, heartbeatInterval);
         if (auth) {
             connection.fetch('user:auth', auth, 'user:auth:reply').then((resp) => {
+                connection.authed = true;
                 onAuth(resp);
             })
         }

@@ -1,5 +1,5 @@
 import { Connection } from "./connection";
-import { ChatMessageData, ErrorResponse, RoomCreateAndJoinResponse, RoomUserJoinAndLeaveData, RoomUserKickedData, Token, UserAuthAndCreateResponse, UserBanResponse } from "./types";
+import { ChatMessageData, ErrorResponse, RoomCreateAndJoinResponse, RoomUserJoinAndLeaveData, RoomUserKickedData, Token, UserAuthAndCreateResponse, UserBanResponse, UserGetResponse } from "./types";
 
 type Handler<Data> = (data: Data) => void;
 
@@ -11,9 +11,16 @@ export const wrap = (connection: Connection) => ({
         user: {
             auth: (username: string, password?: string, token?: string): Promise<UserAuthAndCreateResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('user:auth', { username, password, token }).then((f) => {
-                    resolve((f as UserAuthAndCreateResponse | ErrorResponse))
+                    const resp = (f as UserAuthAndCreateResponse | ErrorResponse);
+                    if (resp.success) connection.authed = true;
+                    resolve(resp)
                 })
-            })
+            }),
+            get: (): Promise<UserGetResponse | ErrorResponse> => new Promise((resolve, reject) => {
+                connection.fetch('user:get', {}).then((f) => {
+                    resolve((f as UserGetResponse | ErrorResponse))
+                })
+            }),
         },
         ping: () => new Promise((resolve, reject) => {
             connection.fetch('ping', {})
