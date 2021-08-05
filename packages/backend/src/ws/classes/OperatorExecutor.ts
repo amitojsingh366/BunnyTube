@@ -28,11 +28,13 @@ export default class OperatorExecutor {
     }
 
     public reply(client: { id: string, ws: WebSocket }, payload: MessagePayload, data: unknown) {
-        client.ws.send(JSON.stringify({
+        const d = JSON.stringify({
             op: `${this.name}:reply`,
             data,
             ref: payload.ref
-        }))
+        });
+        client.ws.send(d);
+        console.log(d);
     }
 
     public setExecutor(executor: Executor): OperatorExecutor {

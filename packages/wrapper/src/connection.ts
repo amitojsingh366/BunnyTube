@@ -66,15 +66,11 @@ export const connect = (
     });
 
     const apiSend = (op: string, data: unknown, ref: string) => {
-
-        if (socket.readyState !== socket.OPEN) {
-            return;
-        }
         const wsdata = JSON.stringify({
             op,
             data,
             ref
-        })
+        });
 
         socket.send(wsdata);
     };
@@ -94,10 +90,12 @@ export const connect = (
         fetch: (op: string, data: unknown) =>
             new Promise((resolveFetch, rejectFetch) => {
                 const ref = uuidv4();
-                connection.addListener(`${op}:reply`, (data) => {
-                    if ((data as any).ref !== ref) return;
-                    resolveFetch(data);
+
+                connection.addListener(`${op}:reply`, (data: any) => {
+                    if (data.ref !== ref) return;
+                    resolveFetch(data.data);
                 });
+
                 apiSend(op, data, ref);
             }),
     };
@@ -107,7 +105,7 @@ export const connect = (
         listeners
             .filter(({ op }) => op === message.op)
             .forEach((it) =>
-                it.handler(message.data)
+                it.handler(message)
             );
     })
 

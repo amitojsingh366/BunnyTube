@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
 import { Connection, connect } from "@bunnytube/wrapper"
-import { useTokenStore } from "../auth/useTokenStore";
+import { useAuthStore } from "../auth/useAuthStore";
 import { wsUrl } from "../../lib/constants";
 
 type V = Connection | null;
@@ -19,11 +19,30 @@ export const WebSocketProvider: React.FC = ({ children }) => {
     const [conn, setConn] = useState<V>(null);
     const { replace } = useRouter();
     const isConnecting = useRef(false);
+    const hasAuth = useAuthStore((s) => s.token && s.username);
+
+    const onAuth = (resp: any) => {
+        if (resp.success) useAuthStore.getState().setToken({ token: resp.token })
+    }
 
     useEffect(() => {
         if (!conn && !isConnecting.current) {
             isConnecting.current = true;
-            connect(wsUrl)
+
+            const params: {
+                url?: string;
+                auth?: { username: string, token: string };
+                onAuth?: (data: unknown) => void;
+            } = { url: wsUrl };
+
+            if (hasAuth) {
+                const token = useAuthStore.getState().token;
+                const username = useAuthStore.getState().username;
+                params.auth = { token, username }
+                params.onAuth = onAuth;
+            }
+
+            connect(params)
                 .then((x) => {
                     setConn(x);
                 })

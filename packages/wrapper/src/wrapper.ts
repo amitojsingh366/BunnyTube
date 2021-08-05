@@ -11,7 +11,7 @@ export const wrap = (connection: Connection) => ({
         user: {
             auth: (username: string, password?: string, token?: string): Promise<UserAuthAndCreateResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('user:auth', { username, password, token }).then((f) => {
-                    resolve((f as UserAuthAndCreateResponse))
+                    resolve((f as UserAuthAndCreateResponse | ErrorResponse))
                 })
             })
         },
@@ -24,24 +24,24 @@ export const wrap = (connection: Connection) => ({
         user: {
             create: (username: string, name: string, password: string, email?: string): Promise<UserAuthAndCreateResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('user:create', { username, name, password, email }).then((f) => {
-                    resolve((f as UserAuthAndCreateResponse))
+                    resolve((f as UserAuthAndCreateResponse | ErrorResponse))
                 })
             }),
             ban: (username: string, reason?: string): Promise<UserBanResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('user:ban', { username, reason }).then((f) => {
-                    resolve((f as UserBanResponse))
+                    resolve((f as UserBanResponse | ErrorResponse))
                 })
             })
         },
         room: {
             create: (name: string, isPrivate?: string): Promise<RoomCreateAndJoinResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('room:create', { name, private: isPrivate }).then((f) => {
-                    resolve((f as RoomCreateAndJoinResponse))
+                    resolve((f as RoomCreateAndJoinResponse | ErrorResponse))
                 })
             }),
             join: (id: string): Promise<RoomCreateAndJoinResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('room:join', { id }).then((f) => {
-                    resolve((f as RoomCreateAndJoinResponse))
+                    resolve((f as RoomCreateAndJoinResponse | ErrorResponse))
                 })
             }),
             leave: () => new Promise((resolve, reject) => {
