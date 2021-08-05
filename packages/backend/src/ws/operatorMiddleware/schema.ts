@@ -2,8 +2,13 @@ import { MiddlewareMethod } from "../classes/OperatorExecutor"
 export const Schema = (data) => {
     const mid: MiddlewareMethod = (server, client, payload, next) => {
         if (!check(data, payload)) return client.ws.send(JSON.stringify({
-            code: 400,
-            error: 'Invalid Schema'
+            op: `${payload.op}:reply`,
+            data: {
+                success: false,
+                code: 400,
+                error: 'Invalid Schema'
+            },
+            ref: payload.ref
         }))
         next()
     }

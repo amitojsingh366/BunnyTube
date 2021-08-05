@@ -15,13 +15,10 @@ operator.use(CheckAuth())
 operator.use(AdminOnly())
 
 operator.setExecutor(async (server, client, payload) => {
-    return client.ws.send(JSON.stringify({
-        op: `${operator.name}:reply`,
-        data: {
-            success: true,
-            id: ''
-        }
-    }))
+    return operator.reply(client, payload, {
+        success: true,
+        id: ''
+    })
 })
 
 export default operator;

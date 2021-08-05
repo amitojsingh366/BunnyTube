@@ -14,19 +14,17 @@ operator.use(CheckAuth())
 
 operator.setExecutor(async (server, client, payload) => {
     const user = server.users.getUserByWsId(client.id);
-    if (!user) return client.ws.send(JSON.stringify({
+    if (!user) return operator.reply(client, payload, {
+        success: false,
         code: 4001,
         error: 'Unauthorized'
-    }))
+    })
 
     if (user.room) await user.room.leave(user.id);
 
-    return client.ws.send(JSON.stringify({
-        op: `${operator.name}:reply`,
-        data: {
-            success: true,
-        }
-    }))
+    return operator.reply(client, payload, {
+        success: true,
+    })
 })
 
 export default operator;

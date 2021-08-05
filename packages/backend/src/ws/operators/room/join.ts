@@ -13,34 +13,34 @@ operator.use(Schema(joinSchema))
 operator.use(CheckAuth())
 
 operator.setExecutor(async (server, client, payload) => {
-    if (!payload.data.id) return client.ws.send(JSON.stringify({
+    if (!payload.data.id) return operator.reply(client, payload, {
+        success: false,
         code: 4000,
         error: 'Room ID Is Mandatory'
-    }));
+    })
 
 
     const room = server.rooms.getRoom(payload.data.id);
 
-    if (!room) return client.ws.send(JSON.stringify({
+    if (!room) return operator.reply(client, payload, {
+        success: false,
         code: 4004,
         error: 'Room Does Not Exist'
-    }));
+    })
 
     const user = server.users.getUserByWsId(client.id);
-    if (!user) return client.ws.send(JSON.stringify({
+    if (!user) return operator.reply(client, payload, {
+        success: false,
         code: 4001,
         error: 'Unauthorized'
-    }))
+    })
 
     await room.join(user)
 
-    return client.ws.send(JSON.stringify({
-        op: `${operator.name}:reply`,
-        data: {
-            success: true,
-            id: room.id
-        }
-    }))
+    return operator.reply(client, payload, {
+        success: true,
+        id: room.id
+    })
 })
 
 export default operator;

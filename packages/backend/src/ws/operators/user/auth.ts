@@ -17,53 +17,61 @@ operator.use(Schema(authSchema))
 operator.setExecutor(async (server, client, payload) => {
     const JWT_SECRET = process.env.JWT_SECRET || "";
 
-    if (!payload.data.token && !payload.data.password) return client.ws.send(JSON.stringify({
+    if (!payload.data.token && !payload.data.password) return operator.reply(client, payload, {
+        success: false,
         code: 4001,
         error: 'Unauthorized'
-    }));
+    })
 
     await database.user.findUnique(
         {
             where: { username: payload.data.username },
             select: { id: true, token: true, password: true }
         }).then(async (user) => {
-            if (user == null) return client.ws.send(JSON.stringify({
+            if (user == null) return operator.reply(client, payload, {
+                success: false,
                 code: 4004,
                 error: 'User Not Found'
-            }));
+            })
 
             if (user.token && payload.data.token) {
                 try {
                     const verifiedToken = jwt.verify(payload.data.token, JWT_SECRET)
-                    if (user.token.revoked) return client.ws.send(JSON.stringify({
+                    if (user.token.revoked) return operator.reply(client, payload, {
+                        success: false,
                         code: 4006,
                         error: 'Token Expired'
-                    }))
-                    if (typeof verifiedToken === "string") return client.ws.send(JSON.stringify({
+                    })
+                    if (typeof verifiedToken === "string") return operator.reply(client, payload, {
+                        success: false,
                         code: 4001,
                         error: 'Unauthorized'
-                    }))
-                    if (verifiedToken.jti !== user.token.jti) return client.ws.send(JSON.stringify({
+                    })
+                    if (verifiedToken.jti !== user.token.jti) return operator.reply(client, payload, {
+                        success: false,
                         code: 4001,
                         error: 'Unauthorized'
-                    }))
-                    if ((verifiedToken.exp || 0) < Date.now()) return client.ws.send(JSON.stringify({
+                    })
+                    if ((verifiedToken.exp || 0) < Date.now()) return operator.reply(client, payload, {
+                        success: false,
                         code: 4006,
                         error: 'Token Expired'
-                    }))
+                    })
                 } catch (error) {
-                    return client.ws.send(JSON.stringify({
+                    return operator.reply(client, payload, {
+                        success: false,
                         code: 4000,
                         error
-                    }));
+                    })
                 }
             }
 
             if (payload.data.password) {
-                if (!Password.validate(payload.data.password, user.password)) return client.ws.send(JSON.stringify({
+                if (!Password.validate(payload.data.password, user.password)) return operator.reply(client, payload, {
+                    success: false,
                     code: 4001,
                     error: 'Unauthorized'
-                }))
+                })
             }
 
             const jti = uuidv4();
@@ -73,10 +81,11 @@ operator.setExecutor(async (server, client, payload) => {
             }, JWT_SECRET);
 
             await database.token.delete({ where: { jti: user.token?.jti } }).catch((e) => {
-                return client.ws.send(JSON.stringify({
+                return operator.reply(client, payload, {
+                    success: false,
                     code: 4006,
                     error: e
-                }))
+                })
             });
 
             await database.token.create({
@@ -85,21 +94,19 @@ operator.setExecutor(async (server, client, payload) => {
                     userId: user.id
                 }
             }).catch((e) => {
-                return client.ws.send(JSON.stringify({
+                return operator.reply(client, payload, {
+                    success: false,
                     code: 4006,
                     error: e
-                }))
+                })
             })
 
             server.users.auth(user.id, client);
 
-            return client.ws.send(JSON.stringify({
-                op: `${operator.name}:reply`,
-                data: {
-                    success: true,
-                    token: newToken
-                }
-            }))
+            return operator.reply(client, payload, {
+                success: true,
+                token: newToken
+            })
         })
 
 })

@@ -8,9 +8,9 @@ const operator = new OperatorExecutor({
 operator.use(Ping());
 
 operator.setExecutor(async (server, client, payload) => {
-    return client.ws.send(JSON.stringify({
-        op: `${operator.name}:reply`
-    }))
+    return operator.reply(client, payload, {
+        success: true,
+    })
 })
 
 export default operator;

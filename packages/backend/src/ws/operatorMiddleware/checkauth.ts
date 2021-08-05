@@ -5,8 +5,13 @@ export const CheckAuth = () => {
 
         const user = server.users.getUserByWsId(client.id);
         if (!user) return client.ws.send(JSON.stringify({
-            code: 4001,
-            error: 'Unauthorized'
+            op: `${payload.op}:reply`,
+            data: {
+                success: false,
+                code: 4001,
+                error: 'Unauthorized'
+            },
+            ref: payload.ref
         }))
 
         next()

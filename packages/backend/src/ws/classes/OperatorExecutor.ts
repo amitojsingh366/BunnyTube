@@ -27,6 +27,14 @@ export default class OperatorExecutor {
         return this;
     }
 
+    public reply(client: { id: string, ws: WebSocket }, payload: MessagePayload, data: unknown) {
+        client.ws.send(JSON.stringify({
+            op: `${this.name}:reply`,
+            data,
+            ref: payload.ref
+        }))
+    }
+
     public setExecutor(executor: Executor): OperatorExecutor {
         this._executor = executor;
         return this;

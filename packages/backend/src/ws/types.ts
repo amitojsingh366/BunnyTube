@@ -1,6 +1,7 @@
 export interface MessagePayload {
     op: string;
-    data: any
+    data: any;
+    ref?: string
 }
 
 export enum UserRole {

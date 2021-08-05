@@ -14,26 +14,25 @@ operator.use(Schema(createSchema))
 operator.use(CheckAuth())
 
 operator.setExecutor(async (server, client, payload) => {
-    if (!payload.data.name) return client.ws.send(JSON.stringify({
+    if (!payload.data.name) return operator.reply(client, payload, {
+        success: false,
         code: 4000,
         error: 'Room Name Is Mandatory'
-    }));
+    })
 
     const roomPrivacy = payload.data.private ? Privacy.PRIVATE : Privacy.PUBLIC;
     const room = await server.rooms.createRoom(client, payload.data.name, roomPrivacy);
 
-    if (!room) return client.ws.send(JSON.stringify({
+    if (!room) return operator.reply(client, payload, {
+        success: false,
         code: 1013,
         error: 'An error occured'
-    }));
+    })
 
-    return client.ws.send(JSON.stringify({
-        op: `${operator.name}:reply`,
-        data: {
-            success: true,
-            id: room.id
-        }
-    }))
+    return operator.reply(client, payload, {
+        success: true,
+        id: room.id
+    })
 })
 
 export default operator;

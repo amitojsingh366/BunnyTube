@@ -17,10 +17,11 @@ operator.use(Schema(createSchema))
 operator.setExecutor(async (server, client, payload) => {
     const JWT_SECRET = process.env.JWT_SECRET || "";
     await database.user.findUnique({ where: { username: payload.data.username } }).then(async (user) => {
-        if (user !== null) return client.ws.send(JSON.stringify({
+        if (user !== null) return operator.reply(client, payload, {
+            success: false,
             code: 4000,
             error: 'User Already Exists'
-        }));
+        })
 
         const jti = uuidv4();
 
@@ -45,18 +46,16 @@ operator.setExecutor(async (server, client, payload) => {
                 }
             })
 
-            return client.ws.send(JSON.stringify({
-                op: `${operator.name}:reply`,
-                data: {
-                    success: true,
-                    token: newToken
-                }
-            }))
+            return operator.reply(client, payload, {
+                success: true,
+                token: newToken
+            })
         }).catch((e) => {
-            return client.ws.send(JSON.stringify({
+            return operator.reply(client, payload, {
+                success: false,
                 code: 4006,
                 error: e
-            }))
+            })
         })
     })
 })
