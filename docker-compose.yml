@@ -1,0 +1,12 @@
+version: "3"
+
+volumes:
+  yarn:
+
+services:
+  bunnytube:
+    image: website
+    ports:
+      - "3000:3000"
+    build:
+      context: ./

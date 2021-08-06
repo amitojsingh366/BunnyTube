@@ -1,0 +1,41 @@
+{
+    "env": {
+        "name": "duxcore",
+        "branch": "dev"
+    },
+    "containers": [
+        {
+            "dir": "/packages/backend",
+            "envVars": [
+                {
+                    "name": "DATABASE_URL",
+                    "secret": "DATABASE_URL"
+                },
+                {
+                    "name": "APP_ADMIN",
+                    "secret": "APP_ADMIN"
+                },
+                {
+                    "name": "WS_PORT",
+                    "secret": "WS_PORT"
+                },
+                {
+                    "name": "PASSWORD_SALT",
+                    "secret": "PASSWORD_SALT"
+                },
+                {
+                    "name": "JWT_SECRET",
+                    "secret": "JWT_SECRET"
+                },
+                {
+                    "name": "WS_TIMEOUT",
+                    "secret": "WS_TIMEOUT"
+                }
+            ]
+        },
+        {
+            "dir": "/",
+            "envVars": []
+        }
+    ]
+}

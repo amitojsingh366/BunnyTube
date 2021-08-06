@@ -17,6 +17,5 @@ services:
       DATABASE_URL: postgres://bunnytube:backend@postgres/bunnytube
     ports:
       - 8443:8443
-      - 7418:7418
     depends_on:
       - postgres
