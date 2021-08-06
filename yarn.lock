@@ -89,6 +89,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bunnytube/website@workspace:packages/website"
   dependencies:
+    "@bunnytube/wrapper": "workspace:packages/wrapper"
     "@tailwindcss/line-clamp": ^0.2.1
     "@types/react": ^17.0.15
     autoprefixer: ^10.3.1
@@ -99,7 +100,6 @@ __metadata:
     tailwindcss: ^2.2.7
     typescript: ^4.3.4
     uuid: ^8.3.2
-    wrapper: ^0.1.0
     zustand: ^3.5.7
   languageName: unknown
   linkType: soft
@@ -4860,13 +4860,6 @@ typescript@^4.3.4:
   version: 1.2.3
   resolution: "word-wrap@npm:1.2.3"
   checksum: 6526abd75d4409c76d1989cf2fbf6080b903db29824be3d17d0a0b8f6221486c76a021174eda2616cf311199787983c34bae3c5e7b51d2ad7476f2066cddb75a
-  languageName: node
-  linkType: hard
-
-"wrapper@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "wrapper@npm:0.1.0"
-  checksum: 94a9ed09d6446e477171ba6861778a2f89b931d1cc211c75be8223f736ac9b1e98d66463935b09d2b95a5a6609bf6f7d21de754a069f5d264519fbcf07eb6fdb
   languageName: node
   linkType: hard
 
