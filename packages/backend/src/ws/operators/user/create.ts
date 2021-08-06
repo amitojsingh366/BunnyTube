@@ -16,6 +16,33 @@ operator.use(Schema(createSchema))
 
 operator.setExecutor(async (server, client, payload) => {
     const JWT_SECRET = process.env.JWT_SECRET || "";
+
+    const validUsername = /^[a-zA-Z0-9]+$/.test(payload.data.username);
+    if (!validUsername) return operator.reply(client, payload, {
+        success: false,
+        code: 4000,
+        error: 'Invalid Username'
+    });
+
+    if (payload.data.email) {
+        const validEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            .test(payload.data.email);
+
+        if (!validEmail) return operator.reply(client, payload, {
+            success: false,
+            code: 4000,
+            error: 'Invalid Email'
+        });
+    }
+
+    const validPassword = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/.test(payload.data.password);
+    if (!validPassword) return operator.reply(client, payload, {
+        success: false,
+        code: 4000,
+        error: 'Invalid Password'
+    });
+
+
     await database.user.findUnique({ where: { username: payload.data.username } }).then(async (user) => {
         if (user !== null) return operator.reply(client, payload, {
             success: false,

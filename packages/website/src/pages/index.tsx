@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../components/Button";
 import { useWrappedConn } from "../hooks/useConn";
 import { useAuthStore } from "../modules/auth/useAuthStore";
@@ -28,8 +28,8 @@ export default function Home() {
 
 
   return (
-    <div className="w-full h-full">
-      <div className="flex flex-col content-center justify-center p-10 gap-2">
+    <div className="flex w-full h-full content-center justify-center">
+      <div className="flex flex-col p-10 gap-2 shadow-md w-1/4 h-1/3 rounded-md mt-48">
         <Input type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
         <Input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
         <Button loading={loading} onClick={login}>Login</Button>
