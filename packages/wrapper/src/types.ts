@@ -31,21 +31,42 @@ export interface UserBanResponse {
 
 export interface RoomCreateAndJoinResponse {
     success: true,
-    id: string
+    room: { id: string, privacy: 'PUBLIC' | 'PRIVATE' }
+}
+
+export interface SendMessageResponse {
+    success: true,
+    message: ChatMessage
+}
+
+export interface GenericSuccessResponse {
+    success: true
+}
+
+export interface ChatMessage {
+    author: RoomUser,
+    content: string,
+    id: string,
 }
 
 export interface ChatMessageData {
-    author: RoomUser,
-    content: string
+    op: string,
+    data: ChatMessage
 }
 
 export interface RoomUserJoinAndLeaveData {
-    user: RoomUser
+    op: string,
+    data: {
+        user: RoomUser
+    }
 }
 
 export interface RoomUserKickedData {
-    user: RoomUser,
-    reason: string
+    op: string,
+    data: {
+        user: RoomUser,
+        reason: string
+    }
 }
 
 export interface ErrorResponse {

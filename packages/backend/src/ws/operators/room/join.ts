@@ -39,7 +39,7 @@ operator.setExecutor(async (server, client, payload) => {
 
     return operator.reply(client, payload, {
         success: true,
-        id: room.id
+        room: { id: room.id, privacy: room.privacy }
     })
 })
 

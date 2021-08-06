@@ -1,5 +1,5 @@
 import { Connection } from "./connection";
-import { ChatMessageData, ErrorResponse, RoomCreateAndJoinResponse, RoomUserJoinAndLeaveData, RoomUserKickedData, Token, UserAuthAndCreateResponse, UserBanResponse, UserGetResponse } from "./types";
+import { ChatMessageData, ErrorResponse, GenericSuccessResponse, RoomCreateAndJoinResponse, RoomUserJoinAndLeaveData, RoomUserKickedData, SendMessageResponse, Token, UserAuthAndCreateResponse, UserBanResponse, UserGetResponse } from "./types";
 
 type Handler<Data> = (data: Data) => void;
 
@@ -22,8 +22,10 @@ export const wrap = (connection: Connection) => ({
                 })
             }),
         },
-        ping: () => new Promise((resolve, reject) => {
-            connection.fetch('ping', {})
+        ping: (): Promise<GenericSuccessResponse | ErrorResponse> => new Promise((resolve, reject) => {
+            connection.fetch('ping', {}).then((f) => {
+                resolve((f as GenericSuccessResponse | ErrorResponse))
+            })
         })
     },
 
@@ -41,8 +43,8 @@ export const wrap = (connection: Connection) => ({
             })
         },
         room: {
-            create: (name: string, isPrivate?: string): Promise<RoomCreateAndJoinResponse | ErrorResponse> => new Promise((resolve, reject) => {
-                connection.fetch('room:create', { name, private: isPrivate }).then((f) => {
+            create: (isPrivate?: boolean): Promise<RoomCreateAndJoinResponse | ErrorResponse> => new Promise((resolve, reject) => {
+                connection.fetch('room:create', { private: isPrivate }).then((f) => {
                     resolve((f as RoomCreateAndJoinResponse | ErrorResponse))
                 })
             }),
@@ -51,13 +53,17 @@ export const wrap = (connection: Connection) => ({
                     resolve((f as RoomCreateAndJoinResponse | ErrorResponse))
                 })
             }),
-            leave: () => new Promise((resolve, reject) => {
-                connection.fetch('room:leave', {})
+            leave: (): Promise<GenericSuccessResponse | ErrorResponse> => new Promise((resolve, reject) => {
+                connection.fetch('room:leave', {}).then((f) => {
+                    resolve((f as GenericSuccessResponse | ErrorResponse))
+                })
             })
         },
         chat: {
-            sendMessage: (content: string) => new Promise((resolve, reject) => {
-                connection.fetch('chat:send_message', { content })
+            sendMessage: (content: string): Promise<SendMessageResponse | ErrorResponse> => new Promise((resolve, reject) => {
+                connection.fetch('chat:send_message', { content }).then((f) => {
+                    resolve((f as SendMessageResponse | ErrorResponse))
+                })
             }),
         }
     },

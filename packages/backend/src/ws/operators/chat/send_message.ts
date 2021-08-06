@@ -35,10 +35,16 @@ operator.setExecutor(async (server, client, payload) => {
     })
 
 
-    await user.room.sendMessage(user.id, payload.data.content);
+    const message = await user.room.sendMessage(user.id, payload.data.content);
+    if (!message) return operator.reply(client, payload, {
+        success: false,
+        code: 4006,
+        error: 'Unknown Error Occured'
+    })
 
     return operator.reply(client, payload, {
-        success: true
+        success: true,
+        message: message
     })
 })
 

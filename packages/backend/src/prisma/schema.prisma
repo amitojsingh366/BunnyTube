@@ -58,7 +58,6 @@ model BannedUsers {
 model Room {
     id        String     @id @default(uuid())
     index     Int        @default(autoincrement())
-    name      String
     privacy   Privacy    @default(PUBLIC)
     users     RoomUser[]
     created   DateTime   @default(now())

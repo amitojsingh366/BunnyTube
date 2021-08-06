@@ -17,14 +17,14 @@ export const WebSocketContext = React.createContext<{
 
 export const WebSocketProvider: React.FC = ({ children }) => {
     const [conn, setConn] = useState<V>(null);
-    const { replace } = useRouter();
+    const { pathname, replace } = useRouter();
     const isConnecting = useRef(false);
     const hasAuth = useAuthStore((s) => s.token && s.username);
 
     const onAuth = (resp: any) => {
         if (resp.success) {
             useAuthStore.getState().setToken({ token: resp.token });
-            replace("/dash");
+            if (pathname === "/") replace("/dash");
         }
         if (!resp.success) replace("/");
     }

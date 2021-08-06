@@ -20,18 +20,17 @@ export class RoomManager {
         return this._rooms.get(id)
     }
 
-    async createRoom(client: { id: string; ws: WebSocket; }, name: string, privacy: Privacy) {
+    async createRoom(client: { id: string; ws: WebSocket; }, privacy: Privacy) {
         const user = this._server.users.getUserByWsId(client.id);
         if (!user) return;
 
         const r = await database.room.create({
             data: {
-                name,
                 privacy
             }
         });
 
-        const room = new Room(r.id, user);
+        const room = new Room(r.id, privacy, user);
         this._rooms.set(r.id, room);
 
         this.setListeners(room);

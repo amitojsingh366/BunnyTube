@@ -5,9 +5,6 @@
     "data": {
         "type": "object",
         "properties": {
-            "name": {
-                "type": "string"
-            },
             "private": {
                 "type": "boolean",
                 "isOptional": true

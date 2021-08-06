@@ -3,21 +3,22 @@ import { AuthedUser } from "./AuthedUser";
 import { RoomUser } from "./RoomUser";
 import { Eventra } from "@duxcore/eventra";
 import { RoomEvents } from "../events";
-import { RoomUserRole } from "../types";
+import { Privacy, RoomUserRole } from "../types";
 import { database } from "../../prisma";
+import { v4 as uuidv4 } from "uuid";
 
 
 export class Room extends Eventra<RoomEvents>{
     private _id: string;
+    private _privacy: Privacy;
     private _creator: AuthedUser;
     private _users: Collection<string, RoomUser> = new Collection<string, RoomUser>();
 
-    constructor(id: string, creator: AuthedUser) {
+    constructor(id: string, privacy: Privacy, creator: AuthedUser) {
         super();
         this._id = id;
+        this._privacy = privacy;
         this._creator = creator;
-
-        this.join(creator);
     }
 
     getUser(id: string) { return this._users.get(id) }
@@ -109,18 +110,26 @@ export class Room extends Eventra<RoomEvents>{
         const author = this.getUser(authorId);
         if (!author) return;
 
+        const id = uuidv4();
+
+        const messageData = {
+            id,
+            author: author.data(),
+            content
+        }
+
         this._users.forEach((u) => {
             if (u.id !== author.id) u.ws.send(JSON.stringify({
                 op: 'chat:message',
-                data: {
-                    author: author.data(),
-                    content
-                }
+                data: messageData
             }))
         })
+
+        return messageData;
     }
 
     get id(): string { return this._id }
+    get privacy(): Privacy { return this._privacy }
     get creator(): AuthedUser { return this._creator }
     get users(): Collection<string, RoomUser> { return this._users }
 }
