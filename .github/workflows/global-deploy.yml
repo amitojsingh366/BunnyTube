@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   npm-publish:
-    name: test-deploy
+    name: deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
