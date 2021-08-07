@@ -35,8 +35,9 @@ COPY --from=website-builder /bunnytube/node_modules ./node_modules
 COPY --from=website-builder /bunnytube/website/package.json ./website/package.json
 
 WORKDIR /bunnytube/website
+RUN yarn add next
+
 
 EXPOSE 3000
-
 CMD [ "yarn", "start" ]
 
