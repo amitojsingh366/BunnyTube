@@ -1,6 +1,6 @@
 {
   "name": "@bunnytube/wrapper",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w"
@@ -38,5 +38,8 @@
   "bugs": {
     "url": "https://github.com/amitojsingh366/BunnyTube/issues"
   },
-  "homepage": "https://github.com/amitojsingh366/BunnyTube#readme"
+  "homepage": "https://github.com/amitojsingh366/BunnyTube#readme",
+  "directories": {
+    "lib": "lib"
+  }
 }
