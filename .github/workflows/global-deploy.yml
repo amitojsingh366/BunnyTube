@@ -1,0 +1,24 @@
+name: global:deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  npm-publish:
+    name: test-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run Deployment Script
+        uses: duxcore/deploy@v1.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          deployment-url: ${{ secrets.DEPLOY_URL }}
+          deployment-secret: ${{ secrets.DEPLOY_SECRET }}
+          APP_ADMIN: ${{ secrets.APP_ADMIN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PASSWORD_SALT: ${{ secrets.PASSWORD_SALT }}
+          WS_PORT: ${{ secrets.WS_PORT }}
+          WS_TIMEOUT: ${{ secrets.WS_TIMEOUT }}
