@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 14
       - name: Install deps
-        run: yarn
+        run: yarn install
       - name: Build NPM Package
         run: yarn build
       - name: Publish if version has been updated
