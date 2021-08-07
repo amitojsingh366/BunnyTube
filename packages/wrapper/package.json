@@ -1,7 +1,6 @@
 {
   "name": "@bunnytube/wrapper",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
@@ -19,5 +18,26 @@
     "@types/uuid": "^8.3.1",
     "@types/ws": "^7.4.7",
     "typescript": "^4.3.4"
-  }
+  },
+  "description": "Bunnytube api wrapper",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amitojsingh366/BunnyTube.git"
+  },
+  "keywords": [
+    "Api",
+    "Wrapper",
+    "Api",
+    "Wrapper",
+    "Bunnytube"
+  ],
+  "author": "Amitoj Singh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amitojsingh366/BunnyTube/issues"
+  },
+  "homepage": "https://github.com/amitojsingh366/BunnyTube#readme"
 }
