@@ -1,7 +1,7 @@
 {
     "env": {
-        "name": "duxcore",
-        "branch": "dev"
+        "name": "BunnyTube",
+        "branch": "main"
     },
     "containers": [
         {
