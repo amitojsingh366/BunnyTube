@@ -24,7 +24,6 @@
   "scripts": {
     "commit": "cz -S",
     "commit:unsigned": "cz",
-    "wrapper:build": "yarn workspace @bunnytube/wrapper build",
-    "publish": "yarn publish --non-interactive --new-version 1.0.1 --non-interactive"
+    "wrapper:build": "yarn workspace @bunnytube/wrapper build"
   }
 }
