@@ -1,10 +1,9 @@
 {
   "name": "@bunnytube/wrapper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w",
-    "postinstall": "yarn build"
+    "watch": "tsc -w"
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
