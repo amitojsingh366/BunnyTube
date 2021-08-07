@@ -89,7 +89,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bunnytube/website@workspace:packages/website"
   dependencies:
-    "@bunnytube/wrapper": 1.0.1
+    "@bunnytube/wrapper": ^1.0.3
     "@tailwindcss/line-clamp": ^0.2.1
     "@types/react": ^17.0.15
     "@types/uuid": ^8.3.1
@@ -105,19 +105,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bunnytube/wrapper@npm:1.0.1":
-  version: 1.0.1
-  resolution: "@bunnytube/wrapper@npm:1.0.1"
-  dependencies:
-    isomorphic-ws: ^4.0.1
-    reconnecting-websocket: ^4.4.0
-    uuid: ^8.3.2
-    ws: ^8.0.0
-  checksum: 723c52edffbee2e8404d6056e412dd4e7aabaef4302317cd598c55c55c86a18abb61e6b4bd6e48bb1f59e9fb6a6719548fa91638f9d52f6f144471f7673f53bd
-  languageName: node
-  linkType: hard
-
-"@bunnytube/wrapper@workspace:packages/wrapper":
+"@bunnytube/wrapper@^1.0.3, @bunnytube/wrapper@workspace:packages/wrapper":
   version: 0.0.0-use.local
   resolution: "@bunnytube/wrapper@workspace:packages/wrapper"
   dependencies:
