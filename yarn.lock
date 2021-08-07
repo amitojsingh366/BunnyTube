@@ -89,7 +89,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bunnytube/website@workspace:packages/website"
   dependencies:
-    "@bunnytube/wrapper": ^1.0.0
+    "@bunnytube/wrapper": 1.0.1
     "@tailwindcss/line-clamp": ^0.2.1
     "@types/react": ^17.0.15
     "@types/uuid": ^8.3.1
@@ -105,7 +105,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bunnytube/wrapper@^1.0.0, @bunnytube/wrapper@workspace:packages/wrapper":
+"@bunnytube/wrapper@1.0.1, @bunnytube/wrapper@workspace:packages/wrapper":
   version: 0.0.0-use.local
   resolution: "@bunnytube/wrapper@workspace:packages/wrapper"
   dependencies:
