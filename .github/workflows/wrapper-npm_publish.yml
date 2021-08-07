@@ -25,9 +25,8 @@ jobs:
           tag_name: "v%s"
           tag_message: "v%s"
           create_tag: "true"
-          commit_pattern: "^chore\(wrapper\): release (\\S+)"
+          commit_pattern: "^chore\\(wrapper\\): release (\\S+)"
           publish_args: "--non-interactive"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-          
