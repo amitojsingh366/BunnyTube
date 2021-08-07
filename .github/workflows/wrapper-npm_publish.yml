@@ -36,7 +36,7 @@ jobs:
           create_tag: "true"
           commit_pattern: "^chore\\(wrapper\\): release (\\S+)"
           publish_command: "yarn npm publish"
-           publish_args: "--tolerate-republish"
+          publish_args: "--tolerate-republish"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
