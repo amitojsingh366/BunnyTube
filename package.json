@@ -23,6 +23,7 @@
   },
   "scripts": {
     "commit": "cz -S",
-    "commit:unsigned": "cz"
+    "commit:unsigned": "cz",
+    "wrapper:build": "yarn workspace @bunnytube/wrapper build"
   }
 }
