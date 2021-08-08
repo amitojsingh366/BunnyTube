@@ -1,5 +1,5 @@
 import { Connection } from "./connection";
-import { ChatMessageData, ErrorResponse, GenericSuccessResponse, RoomCreateAndJoinResponse, RoomUserJoinAndLeaveData, RoomUserKickedData, SendMessageResponse, Token, UserAuthAndCreateResponse, UserBanResponse, UserGetResponse } from "./types";
+import { ChatMessageData, ErrorResponse, GenericSuccessResponse, PlaybackStatus, PlaybackStatusData, RoomCreateResponse, RoomJoinResponse, RoomUserJoinAndLeaveData, RoomUserKickedData, SendMessageResponse, Token, UserAuthAndCreateResponse, UserBanResponse, UserGetResponse } from "./types";
 
 type Handler<Data> = (data: Data) => void;
 
@@ -43,14 +43,14 @@ export const wrap = (connection: Connection) => ({
             })
         },
         room: {
-            create: (isPrivate?: boolean): Promise<RoomCreateAndJoinResponse | ErrorResponse> => new Promise((resolve, reject) => {
+            create: (isPrivate?: boolean): Promise<RoomCreateResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('room:create', { private: isPrivate }).then((f) => {
-                    resolve((f as RoomCreateAndJoinResponse | ErrorResponse))
+                    resolve((f as RoomCreateResponse | ErrorResponse))
                 })
             }),
-            join: (id: string): Promise<RoomCreateAndJoinResponse | ErrorResponse> => new Promise((resolve, reject) => {
+            join: (id: string): Promise<RoomJoinResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('room:join', { id }).then((f) => {
-                    resolve((f as RoomCreateAndJoinResponse | ErrorResponse))
+                    resolve((f as RoomJoinResponse | ErrorResponse))
                 })
             }),
             leave: (): Promise<GenericSuccessResponse | ErrorResponse> => new Promise((resolve, reject) => {
@@ -63,6 +63,13 @@ export const wrap = (connection: Connection) => ({
             sendMessage: (content: string): Promise<SendMessageResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('chat:send_message', { content }).then((f) => {
                     resolve((f as SendMessageResponse | ErrorResponse))
+                })
+            }),
+        },
+        playback: {
+            sendStatus: (status: PlaybackStatus): Promise<GenericSuccessResponse | ErrorResponse> => new Promise((resolve, reject) => {
+                connection.fetch('playback:send_status', status).then((f) => {
+                    resolve((f as GenericSuccessResponse | ErrorResponse))
                 })
             }),
         }
@@ -83,6 +90,10 @@ export const wrap = (connection: Connection) => ({
         user: {
             userAuth: (handler: Handler<UserAuthAndCreateResponse>) =>
                 connection.addListener("user:auth:reply", handler),
+        },
+        playback: {
+            status: (handler: Handler<PlaybackStatusData>) =>
+                connection.addListener("playback:status", handler),
         }
     }
 

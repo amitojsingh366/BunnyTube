@@ -29,9 +29,15 @@ export interface UserBanResponse {
     id: string
 }
 
-export interface RoomCreateAndJoinResponse {
+export interface RoomCreateResponse {
     success: true,
     room: { id: string, privacy: 'PUBLIC' | 'PRIVATE' }
+}
+
+export interface RoomJoinResponse {
+    success: true,
+    room: { id: string, privacy: 'PUBLIC' | 'PRIVATE' },
+    roomUser: RoomUser
 }
 
 export interface SendMessageResponse {
@@ -73,5 +79,18 @@ export interface ErrorResponse {
     success: false,
     error: string,
     code: number
+}
+
+export interface PlaybackStatusData {
+    op: string,
+    data: PlaybackStatus
+}
+
+export interface PlaybackStatus {
+    currentTime: number,
+    paused: boolean,
+    source?: 'YOUTUBE' | 'CUSTOM',
+    videoUrl?: string,
+    isPlaying: boolean
 }
 
