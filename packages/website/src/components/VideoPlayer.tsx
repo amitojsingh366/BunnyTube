@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, FC, IframeHTMLAttributes, useEffect, useState } from "react"
+import { DetailedHTMLProps, FC, IframeHTMLAttributes, useEffect, useRef, useState } from "react"
 import Plyr from "plyr";
 import 'plyr/dist/plyr.css';
 import { RoomUser } from "@bunnytube/wrapper";
@@ -18,6 +18,7 @@ export const VideoPlayer: FC<IframeProps> = ({
     const ytRegex = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
     const [player, setPlayer] = useState<Plyr>()
     let lastStatus = 0;
+    const ref = useRef<HTMLDivElement>(null);
 
     const sendStatus = () => {
         if (!player) return;
@@ -39,7 +40,7 @@ export const VideoPlayer: FC<IframeProps> = ({
     }
 
     useEffect(() => {
-        if (!player) setPlayer(new Plyr('#player'));
+        if (!player) if (ref.current) setPlayer(new Plyr(ref.current || ""));
         if (!wrapper.connection || !player) return;
         wrapper.subscribe.playback.status((status) => {
             if (status.data.isPlaying) {
@@ -87,7 +88,7 @@ export const VideoPlayer: FC<IframeProps> = ({
     }, [(wrapper.connection ? wrapper.connection.authed : wrapper.connection), player, roomUser]);
 
     return (
-        <div className="plyr__video-embed" id="player">
+        <div ref={ref} className="plyr__video-embed" id="player">
             <iframe
                 src="https://www.youtube.com/embed/bTqVqk7FSmY?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
                 allowFullScreen
