@@ -89,12 +89,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bunnytube/website@workspace:packages/website"
   dependencies:
-    "@bunnytube/wrapper": ^1.0.3
+    "@bunnytube/wrapper": 1.0.4
     "@tailwindcss/line-clamp": ^0.2.1
     "@types/react": ^17.0.15
     "@types/uuid": ^8.3.1
     autoprefixer: ^10.3.1
     next: 10.2.3
+    plyr: ^3.6.8
     postcss: ^8.3.6
     react: 17.0.2
     react-dom: 17.0.2
@@ -105,7 +106,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bunnytube/wrapper@^1.0.3, @bunnytube/wrapper@workspace:packages/wrapper":
+"@bunnytube/wrapper@1.0.4, @bunnytube/wrapper@workspace:packages/wrapper":
   version: 0.0.0-use.local
   resolution: "@bunnytube/wrapper@workspace:packages/wrapper"
   dependencies:
@@ -1224,6 +1225,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"core-js@npm:^3.10.1":
+  version: 3.16.0
+  resolution: "core-js@npm:3.16.0"
+  checksum: e215cf057fadd86e5386d8042c1bd0ddab1c7811d8f66d272c356ba9bae34c0897c3f5a80d19f93fd74cff832652354a0feb0c817234a066ae9177e28c6d865a
+  languageName: node
+  linkType: hard
+
 "core-util-is@npm:~1.0.0":
   version: 1.0.2
   resolution: "core-util-is@npm:1.0.2"
@@ -1349,6 +1357,13 @@ __metadata:
   version: 3.0.8
   resolution: "csstype@npm:3.0.8"
   checksum: 5939a003858a31a32cbc52a8f45496aa0c2bcb4629b21c5bc14a7ddcac1a3d4adfd655f56843dc14940f60563378e9444af2c9c373b3f212601b9eeb6740b8db
+  languageName: node
+  linkType: hard
+
+"custom-event-polyfill@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "custom-event-polyfill@npm:1.0.7"
+  checksum: f9ff2cf13e482a75b3cf83dce9e2c6e3063c5ac1b9c23ac440e4f27e875b0873445b11811237f3f30aeb1216e9ad20f9f9d30ccf5b1b658a4e50dd0b3e67b629
   languageName: node
   linkType: hard
 
@@ -2676,6 +2691,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"loadjs@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "loadjs@npm:4.2.0"
+  checksum: 2144723f55c75260ce6781b36009c40d098d96fe06e3ec5c85ba250cf96c3a0aa37169b829e818c40bcba7c5141a8e52736fec193333bb6260ab95f9a493a2ef
+  languageName: node
+  linkType: hard
+
 "locate-path@npm:^5.0.0":
   version: 5.0.0
   resolution: "locate-path@npm:5.0.0"
@@ -3502,6 +3524,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"plyr@npm:^3.6.8":
+  version: 3.6.8
+  resolution: "plyr@npm:3.6.8"
+  dependencies:
+    core-js: ^3.10.1
+    custom-event-polyfill: ^1.0.7
+    loadjs: ^4.2.0
+    rangetouch: ^2.0.1
+    url-polyfill: ^1.1.12
+  checksum: 1a1f28fab9bee540bd9d5cf058c75c3f9424aa22e99c80ccf5fa733239c57b4d6baed92e48c1c0dd274e8410d3aff2e9c2001eeb6d72c07c5e386503eddb52af
+  languageName: node
+  linkType: hard
+
 "pnp-webpack-plugin@npm:1.6.4":
   version: 1.6.4
   resolution: "pnp-webpack-plugin@npm:1.6.4"
@@ -3755,6 +3790,13 @@ __metadata:
     randombytes: ^2.0.5
     safe-buffer: ^5.1.0
   checksum: 33734bb578a868d29ee1b8555e21a36711db084065d94e019a6d03caa67debef8d6a1bfd06a2b597e32901ddc761ab483a85393f0d9a75838f1912461d4dbfc7
+  languageName: node
+  linkType: hard
+
+"rangetouch@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "rangetouch@npm:2.0.1"
+  checksum: 2aa7c0901d28356ef0c02021656ed7d11fc6652f01ffe92806862fc4593e75f7a5d52d4455fa1b0ab2123d438e03dc091315949dbfad9562a680440ac0dfeb7d
   languageName: node
   linkType: hard
 
@@ -4677,6 +4719,13 @@ typescript@^4.3.4:
   version: 1.0.0
   resolution: "unpipe@npm:1.0.0"
   checksum: 4fa18d8d8d977c55cb09715385c203197105e10a6d220087ec819f50cb68870f02942244f1017565484237f1f8c5d3cd413631b1ae104d3096f24fdfde1b4aa2
+  languageName: node
+  linkType: hard
+
+"url-polyfill@npm:^1.1.12":
+  version: 1.1.12
+  resolution: "url-polyfill@npm:1.1.12"
+  checksum: 3214cc82424c215e921dacadac56b4b099f995d24e14078369bea9ff8aa74d1a4c803ab03021e61e0a275bee7979d212d046092dba3aab73cf232ee6739ddee4
   languageName: node
   linkType: hard
 
