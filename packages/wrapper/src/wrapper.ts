@@ -11,9 +11,7 @@ export const wrap = (connection: Connection) => ({
         user: {
             auth: (username: string, password?: string, token?: string): Promise<UserAuthAndCreateResponse | ErrorResponse> => new Promise((resolve, reject) => {
                 connection.fetch('user:auth', { username, password, token }).then((f) => {
-                    const resp = (f as UserAuthAndCreateResponse | ErrorResponse);
-                    if (resp.success) connection.authed = true;
-                    resolve(resp)
+                    resolve((f as UserAuthAndCreateResponse | ErrorResponse))
                 })
             }),
             get: (): Promise<UserGetResponse | ErrorResponse> => new Promise((resolve, reject) => {

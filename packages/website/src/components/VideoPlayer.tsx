@@ -20,9 +20,12 @@ export const VideoPlayer: FC<IframeProps> = ({
     let lastStatus = 0;
     const ref = useRef<HTMLDivElement>(null);
 
+    const defaultControls = ['progress', 'current-time', 'duration', 'mute', 'volume', 'captions',
+        'pip', 'airplay', 'fullscreen'];
+    const privilllagedControls = ['play-large', 'play', 'restart'].concat(defaultControls);
+
     const sendStatus = () => {
         if (!player) return;
-
         let match = typeof player.source === "string" ? (player.source as string).match(ytRegex) : undefined;
         wrapper.mutation.playback.sendStatus({
             source: 'YOUTUBE',
@@ -40,7 +43,6 @@ export const VideoPlayer: FC<IframeProps> = ({
     }
 
     useEffect(() => {
-        if (!player) if (ref.current) setPlayer(new Plyr(ref.current || ""));
         if (!wrapper.connection || !player) return;
         wrapper.subscribe.playback.status((status) => {
             if (status.data.isPlaying) {
@@ -74,18 +76,23 @@ export const VideoPlayer: FC<IframeProps> = ({
     }, [wrapper.connection, player]);
 
     useEffect(() => {
-        if (!wrapper.connection || !wrapper.connection.authed || !player || !roomUser) return;
+        console.log(roomUser && roomUser.role == "USER");
+        if (!wrapper.connection || !roomUser) return;
+        if (!player) if (ref.current) setPlayer(new Plyr(ref.current || "", {
+            controls: roomUser && roomUser.role == "USER" ? defaultControls : privilllagedControls
+        }));
+        if (!player) return;
         player.on('play', sendStatus)
         player.on('pause', sendStatus);
         player.on('seeked', sendRateLimitedStatus);
 
         setInterval(() => {
-            if (roomUser && (roomUser.role == "ADMINISTRATOR" || roomUser.role == "MODERATOR")) {
+            if (roomUser && (roomUser.role == "ADMINISTRATOR")) {
                 sendStatus();
             }
         }, 3000);
 
-    }, [(wrapper.connection ? wrapper.connection.authed : wrapper.connection), player, roomUser]);
+    }, [wrapper.connection, player, roomUser]);
 
     return (
 

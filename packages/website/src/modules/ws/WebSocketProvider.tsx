@@ -9,9 +9,11 @@ type V = Connection | null;
 
 export const WebSocketContext = React.createContext<{
     conn: V;
+    authed: boolean,
     setConn: (u: Connection | null) => void;
 }>({
     conn: null,
+    authed: false,
     setConn: () => { },
 });
 
@@ -20,10 +22,12 @@ export const WebSocketProvider: React.FC = ({ children }) => {
     const { pathname, replace } = useRouter();
     const isConnecting = useRef(false);
     const hasAuth = useAuthStore((s) => s.token && s.username);
+    const [authed, setAuthed] = useState(false);
 
     const onAuth = (resp: any) => {
         if (resp.success) {
             useAuthStore.getState().setToken({ token: resp.token });
+            setAuthed(true);
             if (pathname === "/") replace("/dash");
         }
         if (!resp.success) replace("/");
@@ -73,9 +77,10 @@ export const WebSocketProvider: React.FC = ({ children }) => {
             value={useMemo(
                 () => ({
                     conn,
+                    authed,
                     setConn,
                 }),
-                [conn]
+                [conn, authed]
             )}
         >
             {children}

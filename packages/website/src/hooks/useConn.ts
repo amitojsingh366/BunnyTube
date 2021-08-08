@@ -6,6 +6,10 @@ export const useConn = () => {
     return useContext(WebSocketContext).conn!;
 };
 
+export const useConnContext = () => {
+    return useContext(WebSocketContext);
+};
+
 export const useWrappedConn = () => {
     return wrap(useContext(WebSocketContext).conn!);
 };
