@@ -40,6 +40,7 @@ export const VideoPlayer: FC<IframeProps> = ({
     }
 
     useEffect(() => {
+        console.log(Plyr)
         if (!player) if (ref.current) setPlayer(new Plyr(ref.current || ""));
         if (!wrapper.connection || !player) return;
         wrapper.subscribe.playback.status((status) => {
@@ -88,8 +89,8 @@ export const VideoPlayer: FC<IframeProps> = ({
     }, [(wrapper.connection ? wrapper.connection.authed : wrapper.connection), player, roomUser]);
 
     return (
-       
-         <div ref={ref} className="plyr__video-embed" id="player">
+
+        <div ref={ref} className="plyr__video-embed" id="player">
             <iframe
                 src="https://www.youtube.com/embed/bTqVqk7FSmY?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
                 allowFullScreen
@@ -99,6 +100,6 @@ export const VideoPlayer: FC<IframeProps> = ({
         </div>
 
 
-        
+
     )
 }
