@@ -25,5 +25,6 @@
     "commit": "cz -S",
     "commit:unsigned": "cz",
     "wrapper:build": "yarn workspace @bunnytube/wrapper build"
-  }
+  },
+  "packageManager": "yarn@2.4.2"
 }
