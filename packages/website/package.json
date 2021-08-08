@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "cross-env WS_URL=ws://bunnytube.amitoj.net:8443 next start",
     "compile": "tsc"
   },
   "dependencies": {
     "@bunnytube/wrapper": "^1.0.5",
     "@tailwindcss/line-clamp": "^0.2.1",
+    "cross-env": "^7.0.3",
     "next": "10.2.3",
     "plyr": "^3.6.8",
     "react": "17.0.2",
