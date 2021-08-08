@@ -30,7 +30,7 @@ FROM node:alpine as website-runner
 WORKDIR /bunnytube
 
 COPY --from=website-builder /bunnytube/website/public ./website/public
-COPY --from=website-builder --chown=nextjs:nodejs /bunnytube/website/.next ./website/.next
+COPY --from=website-builder /bunnytube/website/.next ./website/.next
 COPY --from=website-builder /bunnytube/node_modules ./node_modules
 COPY --from=website-builder /bunnytube/website/package.json ./website/package.json
 
