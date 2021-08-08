@@ -10,12 +10,15 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./.docker/postgres:/var/lib/docker/volumes/postgresql/_data
+      - postgresql:/home/postgresql/data
   bunnytube-backend:
     build: ./
+    restart: unless-stopped
     environment:
       DATABASE_URL: postgres://bunnytube:backend@postgres/bunnytube
     ports:
       - 8443:8443
     depends_on:
       - postgres
+volumes:
+  postgresql:
