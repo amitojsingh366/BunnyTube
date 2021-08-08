@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env WS_URL=ws://bunnytube.amitoj.net:8443 next dev",
+    "dev": "next dev",
     "build": "next build",
-    "start": "cross-env WS_URL=ws://bunnytube.amitoj.net:8443 next start",
+    "start": "next start",
     "compile": "tsc"
   },
   "dependencies": {
