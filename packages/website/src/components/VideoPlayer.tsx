@@ -40,7 +40,6 @@ export const VideoPlayer: FC<IframeProps> = ({
     }
 
     useEffect(() => {
-        console.log(Plyr)
         if (!player) if (ref.current) setPlayer(new Plyr(ref.current || ""));
         if (!wrapper.connection || !player) return;
         wrapper.subscribe.playback.status((status) => {
