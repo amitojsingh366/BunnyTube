@@ -44,7 +44,7 @@ export const connect = (
         onAuth?: (data: unknown) => void;
     }
 ): Promise<Connection> => new Promise((resolve, reject) => {
-    const socket = new ReconnectingWebSocket(url ?? apiUrl, [], {
+    const socket = new ReconnectingWebSocket(url ? url : apiUrl, [], {
         connectionTimeout,
         WebSocket,
     });

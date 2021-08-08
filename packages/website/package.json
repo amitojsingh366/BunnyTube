@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env WS_URL=ws://bunnytube.amitoj.net:8443 next dev",
     "build": "next build",
     "start": "cross-env WS_URL=ws://bunnytube.amitoj.net:8443 next start",
     "compile": "tsc"
   },
   "dependencies": {
-    "@bunnytube/wrapper": "^1.0.5",
+    "@bunnytube/wrapper": "^1.0.6",
     "@tailwindcss/line-clamp": "^0.2.1",
     "cross-env": "^7.0.3",
     "next": "10.2.3",
