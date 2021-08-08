@@ -3,7 +3,7 @@ import { AuthedUser } from "./AuthedUser";
 import { RoomUser } from "./RoomUser";
 import { Eventra } from "@duxcore/eventra";
 import { RoomEvents } from "../events";
-import { Privacy, RoomUserRole } from "../types";
+import { PlaybackStatus, Privacy, RoomUserRole } from "../types";
 import { database } from "../../prisma";
 import { v4 as uuidv4 } from "uuid";
 
@@ -42,7 +42,7 @@ export class Room extends Eventra<RoomEvents>{
 
             this._users.forEach((u) => u.ws.send(data))
         })
-        return this;
+        return roomUser.data();
     }
 
     async leave(userId: string) {
@@ -126,6 +126,21 @@ export class Room extends Eventra<RoomEvents>{
         })
 
         return messageData;
+    }
+
+    async sendPlaybackStatus(authorId: string, status: PlaybackStatus) {
+        const author = this.getUser(authorId);
+        if (!author) return;
+
+        if (author.role === RoomUserRole.USER) return false;
+
+        this._users.forEach((u) => {
+            u.ws.send(JSON.stringify({
+                op: 'playback:status',
+                data: status
+            }))
+        });
+        return true;
     }
 
     get id(): string { return this._id }

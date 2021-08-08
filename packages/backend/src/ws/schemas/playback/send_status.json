@@ -1,0 +1,27 @@
+{
+    "op": {
+        "type": "string"
+    },
+    "data": {
+        "type": "object",
+        "properties": {
+            "currentTime": {
+                "type": "number"
+            },
+            "paused": {
+                "type": "boolean"
+            },
+            "source": {
+                "type": "string",
+                "isOptional": true
+            },
+            "videoUrl": {
+                "type": "string",
+                "isOptional": true
+            },
+            "isPlaying": {
+                "type": "boolean"
+            }
+        }
+    }
+}

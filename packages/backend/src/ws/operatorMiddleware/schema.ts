@@ -22,7 +22,7 @@ function check(data, payload) {
         const element = data[oKey];
 
         if (oKey !== "type" && oKey !== "properties" && !element.isOptional) {
-            if (!payload[oKey]) return false;
+            if (payload[oKey] == null || payload[oKey] == undefined) return false;
             if (typeof payload[oKey] !== element.type) return false;
             if (element['properties']) return check(element['properties'], payload[oKey]);
         }

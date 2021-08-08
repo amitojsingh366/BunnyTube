@@ -45,3 +45,10 @@ export interface RoomUserData {
     wsId: string
 }
 
+export interface PlaybackStatus {
+    currentTime: number,
+    paused: boolean,
+    source?: 'YOUTUBE' | 'CUSTOM',
+    videoUrl?: string,
+    isPlaying: boolean
+}
