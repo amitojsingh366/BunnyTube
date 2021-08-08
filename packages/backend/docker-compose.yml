@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgresql:/home/postgresql/data
+      - postgresql:/var/lib/docker/volumes/postgresql/_data
   bunnytube-backend:
     build: ./
     restart: unless-stopped
@@ -22,3 +22,4 @@ services:
       - postgres
 volumes:
   postgresql:
+    external: true
