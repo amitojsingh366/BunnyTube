@@ -11,10 +11,12 @@ export const WebSocketContext = React.createContext<{
     conn: V;
     authed: boolean,
     setConn: (u: Connection | null) => void;
+    setAuthed: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
     conn: null,
     authed: false,
     setConn: () => { },
+    setAuthed: () => { }
 });
 
 export const WebSocketProvider: React.FC = ({ children }) => {
@@ -79,6 +81,7 @@ export const WebSocketProvider: React.FC = ({ children }) => {
                     conn,
                     authed,
                     setConn,
+                    setAuthed
                 }),
                 [conn, authed]
             )}

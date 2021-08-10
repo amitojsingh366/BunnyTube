@@ -42,7 +42,10 @@ export class Room extends Eventra<RoomEvents>{
 
             this._users.forEach((u) => u.ws.send(data))
         })
-        return roomUser.data();
+        return {
+            room: this.data(),
+            roomUser: roomUser.data()
+        };
     }
 
     async leave(userId: string) {
@@ -147,7 +150,7 @@ export class Room extends Eventra<RoomEvents>{
         const mod = this.getUser(modId);
         if (!mod) return;
 
-        if (mod.role === RoomUserRole.ADMINISTRATOR) return;
+        if (mod.role !== RoomUserRole.ADMINISTRATOR) return;
 
         const roomUser = this.getUser(userId);
         if (!roomUser) return;
@@ -168,11 +171,20 @@ export class Room extends Eventra<RoomEvents>{
                 }))
             });
         });
-        return true;
+        return;
     }
 
     get id(): string { return this._id }
     get privacy(): Privacy { return this._privacy }
     get creator(): AuthedUser { return this._creator }
     get users(): Collection<string, RoomUser> { return this._users }
+
+    data() {
+        return {
+            id: this.id,
+            privacy: this.privacy,
+            creator: this.getUser(this.creator.id)?.data(),
+            users: this.users.map((u) => u.data())
+        }
+    }
 }

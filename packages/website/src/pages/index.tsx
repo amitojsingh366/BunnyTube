@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Button } from "../components/Button";
-import { useWrappedConn } from "../hooks/useConn";
+import { useConnContext, useWrappedConn } from "../hooks/useConn";
 import { useAuthStore } from "../modules/auth/useAuthStore";
 import { Input } from "../components/Input";
 import { useRouter } from "next/router";
 
 export default function Home() {
   const wrapper = useWrappedConn();
+  const connContext = useConnContext();
   const { replace } = useRouter();
 
 
@@ -22,8 +23,13 @@ export default function Home() {
     if (!resp.success) console.error(resp.error)
     if (resp.success) {
       useAuthStore.getState().setAuth({ token: resp.token, username });
+      connContext.setAuthed(true);
       replace("/dash");
     }
+  }
+
+  const signup = () => {
+    replace("/signup");
   }
 
 
@@ -33,6 +39,7 @@ export default function Home() {
         <Input type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
         <Input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
         <Button loading={loading} onClick={login}>Login</Button>
+        <Button onClick={signup}>Signup</Button>
       </div>
     </div>
   );

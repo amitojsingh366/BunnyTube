@@ -35,12 +35,12 @@ operator.setExecutor(async (server, client, payload) => {
         error: 'Unauthorized'
     })
 
-    const roomUser = await room.join(user);
+    const data = await room.join(user);
 
     return operator.reply(client, payload, {
         success: true,
-        room: { id: room.id, privacy: room.privacy },
-        roomUser
+        room: data.room,
+        roomUser: data.roomUser
     })
 })
 

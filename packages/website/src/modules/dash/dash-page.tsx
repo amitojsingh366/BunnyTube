@@ -29,6 +29,10 @@ export default function DashboardPage() {
         }
     }
 
+    const logout = () => {
+        replace('/logout')
+    }
+
     return (
         <div className="flex flex-col content-center justify-center p-10 gap-2">
             <h3>Welcome {name}</h3>
@@ -37,6 +41,8 @@ export default function DashboardPage() {
             </div>
 
             <Button loading={loading} onClick={createRoom}>Create Room</Button>
+
+            <Button onClick={logout}>Log Out</Button>
         </div>
     );
 }

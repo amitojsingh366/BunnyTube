@@ -36,7 +36,12 @@ export interface RoomCreateResponse {
 
 export interface RoomJoinResponse {
     success: true,
-    room: { id: string, privacy: 'PUBLIC' | 'PRIVATE' },
+    room: {
+        id: string,
+        privacy: 'PUBLIC' | 'PRIVATE',
+        creator: RoomUser,
+        users: RoomUser[]
+    },
     roomUser: RoomUser
 }
 
