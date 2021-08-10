@@ -30,7 +30,7 @@ export const WebSocketProvider: React.FC = ({ children }) => {
             setAuthed(true);
             if (pathname === "/") replace("/dash");
         }
-        if (!resp.success) replace("/");
+        if (!resp.success) if (pathname !== "/signup" && pathname !== "/") replace("/");
     }
 
     useEffect(() => {
