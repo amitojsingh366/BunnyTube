@@ -80,34 +80,15 @@ operator.setExecutor(async (server, client, payload) => {
                 exp: Date.now() + 1296000000
             }, JWT_SECRET);
 
-            console.log(1);
-            console.log(user.token)
-
-            await database.token.delete({ where: { jti: user.token?.jti } }).catch((e) => {
-                console.log(2)
-                return operator.reply(client, payload, {
-                    success: false,
-                    code: 4006,
-                    error: e
-                })
-            });
-
-            console.log(3);
-
-            await database.token.create({
-                data: {
-                    jti,
-                    userId: user.id
+            await database.token.update({
+                where: { userId: user.id }, data: {
+                    jti: jti,
+                    issuedAt: new Date(),
+                    revoked: false,
+                    revokedAt: null
                 }
-            }).catch((e) => {
-                console.log(4);
-                return operator.reply(client, payload, {
-                    success: false,
-                    code: 4006,
-                    error: e
-                })
             })
-            console.log(5);
+
             server.users.auth(user.id, client);
 
             return operator.reply(client, payload, {

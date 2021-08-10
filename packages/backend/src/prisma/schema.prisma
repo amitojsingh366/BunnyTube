@@ -41,7 +41,7 @@ model User {
 model Token {
     id        Int       @id @default(autoincrement())
     user      User      @relation(fields: [userId], references: [id])
-    userId    String
+    userId    String    @unique
     jti       String    @unique
     revoked   Boolean   @default(false)
     revokedAt DateTime?
