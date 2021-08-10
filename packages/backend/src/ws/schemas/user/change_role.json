@@ -1,0 +1,20 @@
+{
+    "op": {
+        "type": "string"
+    },
+    "data": {
+        "type": "object",
+        "properties": {
+            "userId": {
+                "type": "string"
+            },
+            "room": {
+                "type": "boolean",
+                "isOptional": true
+            },
+            "newRole": {
+                "type": "string"
+            }
+        }
+    }
+}

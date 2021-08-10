@@ -130,7 +130,7 @@ export class Room extends Eventra<RoomEvents>{
 
     async sendPlaybackStatus(authorId: string, status: PlaybackStatus) {
         const author = this.getUser(authorId);
-        if (!author) return;
+        if (!author) return false;
 
         if (author.role === RoomUserRole.USER) return false;
 
@@ -139,6 +139,34 @@ export class Room extends Eventra<RoomEvents>{
                 op: 'playback:status',
                 data: status
             }))
+        });
+        return true;
+    }
+
+    async changeUserRole(modId: string, userId: string, newRole: RoomUserRole) {
+        const mod = this.getUser(modId);
+        if (!mod) return;
+
+        if (mod.role === RoomUserRole.ADMINISTRATOR) return;
+
+        const roomUser = this.getUser(userId);
+        if (!roomUser) return;
+
+        roomUser.setRole(newRole);
+
+        this._users.set(userId, roomUser);
+
+        await database.roomUser.update({
+            where: { userId }, data: {
+                role: newRole
+            }
+        }).then(() => {
+            this._users.forEach((u) => {
+                u.ws.send(JSON.stringify({
+                    op: 'user:updated',
+                    data: roomUser.data()
+                }))
+            });
         });
         return true;
     }

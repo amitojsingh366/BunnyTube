@@ -94,3 +94,14 @@ export interface PlaybackStatus {
     isPlaying: boolean
 }
 
+export interface UserUpdateData {
+    op: string,
+    data: RoomUser
+}
+
+
+export enum RoomUserRole {
+    ADMINISTRATOR = 'ADMINISTRATOR',
+    MODERATOR = 'MODERATOR',
+    USER = 'USER'
+}

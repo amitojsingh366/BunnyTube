@@ -39,7 +39,7 @@ operator.setExecutor(async (server, client, payload) => {
     if (!validPassword) return operator.reply(client, payload, {
         success: false,
         code: 4000,
-        error: 'Invalid Password'
+        error: 'Password is weak'
     });
 
 

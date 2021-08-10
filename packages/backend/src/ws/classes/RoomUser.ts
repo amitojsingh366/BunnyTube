@@ -29,6 +29,10 @@ export class RoomUser {
     get ws(): WebSocket { return this._ws }
     get wsId(): string { return this._wsId }
 
+    setRole(newRole: RoomUserRole) {
+        this._role = newRole;
+    }
+
     data() {
         return {
             id: this._id,

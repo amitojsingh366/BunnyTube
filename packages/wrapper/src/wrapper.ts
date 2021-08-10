@@ -1,5 +1,10 @@
 import { Connection } from "./connection";
-import { ChatMessageData, ErrorResponse, GenericSuccessResponse, PlaybackStatus, PlaybackStatusData, RoomCreateResponse, RoomJoinResponse, RoomUserJoinAndLeaveData, RoomUserKickedData, SendMessageResponse, Token, UserAuthAndCreateResponse, UserBanResponse, UserGetResponse } from "./types";
+import {
+    ChatMessageData, ErrorResponse, GenericSuccessResponse,
+    PlaybackStatus, PlaybackStatusData, RoomCreateResponse, RoomJoinResponse,
+    RoomUserJoinAndLeaveData, RoomUserKickedData, RoomUserRole, SendMessageResponse,
+    UserAuthAndCreateResponse, UserBanResponse, UserGetResponse, UserUpdateData
+} from "./types";
 
 type Handler<Data> = (data: Data) => void;
 
@@ -38,7 +43,12 @@ export const wrap = (connection: Connection) => ({
                 connection.fetch('user:ban', { username, reason }).then((f) => {
                     resolve((f as UserBanResponse | ErrorResponse))
                 })
-            })
+            }),
+            changeRole: (userId: string, newRole: RoomUserRole, room?: boolean): Promise<GenericSuccessResponse | ErrorResponse> => new Promise((resolve, reject) => {
+                connection.fetch('user:change_role', { userId, newRole, room }).then((f) => {
+                    resolve((f as GenericSuccessResponse | ErrorResponse))
+                })
+            }),
         },
         room: {
             create: (isPrivate?: boolean): Promise<RoomCreateResponse | ErrorResponse> => new Promise((resolve, reject) => {
@@ -88,6 +98,8 @@ export const wrap = (connection: Connection) => ({
         user: {
             userAuth: (handler: Handler<UserAuthAndCreateResponse>) =>
                 connection.addListener("user:auth:reply", handler),
+            updated: (handler: Handler<UserUpdateData>) =>
+                connection.addListener("user:updated", handler),
         },
         playback: {
             status: (handler: Handler<PlaybackStatusData>) =>
